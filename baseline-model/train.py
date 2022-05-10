@@ -25,6 +25,7 @@ from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from openpyxl import Workbook
 from torchsummary import summary
+import torch_xla.core.xla_model as xm
 
 import utils
 import resnet
@@ -309,8 +310,10 @@ if __name__=='__main__':
     np.random.seed(8)
     
     # CUDA for PyTorch
+    
     use_cuda = torch.cuda.is_available()
-    device = torch.device("cuda:0" if use_cuda else "cpu")
+    device = xm.xla_device()
+    # device = torch.device("cuda:0" if use_cuda else "cpu")
     print(device)
     
     #Output file names
