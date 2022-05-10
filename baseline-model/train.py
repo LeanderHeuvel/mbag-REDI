@@ -293,7 +293,7 @@ if __name__=='__main__':
     acc_num_firstsubset=[]
     use_pretrained=True
     batch_size=15
-    num_workers=10
+    num_workers=2
     mean=[0.5,0.5,0.5]
     std_dev=[0.5,0.5,0.5]
     
