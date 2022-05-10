@@ -160,3 +160,4 @@ def bagnet9(pretrained=False, strides=[2, 2, 2, 1], **kwargs):
     model = BagNet(Bottleneck, [3, 4, 6, 3], strides=strides, kernel3=[1,1,0,0], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['bagnet9']))
+    return model
