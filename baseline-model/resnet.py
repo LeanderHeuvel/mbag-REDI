@@ -7,7 +7,7 @@ Created on Tue May  3 14:23:35 2022
 
 import torch
 import torch.nn as nn
-from utils import load_state_dict_from_url
+from torch.hub.utils import load_state_dict_from_url
 
 
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
