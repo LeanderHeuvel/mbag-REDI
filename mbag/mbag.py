@@ -69,7 +69,7 @@ class BagNet(nn.Module):
     def __init__(self, block, layers, strides=[1, 2, 2, 2], kernel3=[0, 0, 0, 0], num_classes=1000, avg_pool=True):
         self.inplanes = 64
         super(BagNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=1, stride=1, padding=0,
+        self.conv1 = nn.Conv2d(1, 64, kernel_size=1, stride=1, padding=0,
                                bias=False)
         self.conv2 = nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=0,
                                bias=False)
