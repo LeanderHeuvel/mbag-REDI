@@ -136,13 +136,13 @@ class BreastCancerDataset_generator(Dataset):
         data=self.df.iloc[idx]
         studyuid_path=cluster_data_path_prefix+str(data['FullPath'])
         img=collect_images(studyuid_path)
+        img = img.convert(mode="L")
         #print("views_saved:",views_saved)
         #hflip_img = MyHorizontalFlip()
         if self.transform:
             img=self.transform(img)
         #print("after transformation:",img.shape)
         # img=img[0,:,:]
-        img = img.convert(mode="L")
         return idx, img, torch.tensor(groundtruth_dic[data['Groundtruth']])
 
 def MyCollate(batch):
