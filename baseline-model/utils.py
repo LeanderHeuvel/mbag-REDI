@@ -141,7 +141,8 @@ class BreastCancerDataset_generator(Dataset):
         if self.transform:
             img=self.transform(img)
         #print("after transformation:",img.shape)
-        img=img[:,:,:]
+        # img=img[0,:,:]
+        img = img.convert(mode="L")
         return idx, img, torch.tensor(groundtruth_dic[data['Groundtruth']])
 
 def MyCollate(batch):
