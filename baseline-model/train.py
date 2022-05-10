@@ -292,7 +292,7 @@ if __name__=='__main__':
     groundtruth_list=[]
     acc_num_firstsubset=[]
     use_pretrained=True
-    batch_size=15
+    batch_size=5
     num_workers=2
     mean=[0.5,0.5,0.5]
     std_dev=[0.5,0.5,0.5]
