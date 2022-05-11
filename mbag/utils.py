@@ -164,6 +164,7 @@ def MyCollate(batch):
 def collect_images(img_path):
     #collect images for the model
     img=Image.open(img_path)
+    img=img.resize(224,224)
     return img
 
 def data_augmentation_train(mean,std_dev):
@@ -175,7 +176,7 @@ def data_augmentation_train(mean,std_dev):
         transforms.RandomAdjustSharpness(sharpness_factor=0.20),
         MyGammaCorrection(0.20),
         MyPaddingLongerSide(),
-        transforms.Resize((224,224)),
+        transforms.Resize((1600,1600)),
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std_dev)
     ])
