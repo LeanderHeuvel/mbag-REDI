@@ -311,7 +311,7 @@ if __name__=='__main__':
     
     # CUDA for PyTorch
     
-
+    use_cuda = torch.cuda.is_available()
     device = torch.device("cuda:0" if use_cuda else "cpu")
     print(device)
     
