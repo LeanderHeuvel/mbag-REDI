@@ -378,13 +378,13 @@ if __name__=='__main__':
         sheet3 = wb.create_sheet('confusion matrix test') 
         sheet4 = wb.create_sheet('metrics view wise')
     
-    model = resnet.resnet18() #change this line to resnet18,resnet50 or bagnet() whatever you want to use
+    model = resnet.resnet50() #change this line to resnet18,resnet50 or bagnet() whatever you want to use
     model.to(device)
     
     preprocess_train=utils.data_augmentation_train(mean,std_dev)
     
     preprocess_val = transforms.Compose([
-        transforms.Resize((1600,1600)),
+        transforms.Resize((224,224)),
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std_dev)
     ])
