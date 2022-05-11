@@ -176,7 +176,7 @@ def data_augmentation_train(mean,std_dev):
         transforms.RandomAdjustSharpness(sharpness_factor=0.20),
         MyGammaCorrection(0.20),
         MyPaddingLongerSide(),
-        transforms.Resize((700,700)),
+        transforms.Resize((600,600)),
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std_dev)
     ])
