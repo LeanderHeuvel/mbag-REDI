@@ -164,6 +164,7 @@ def MyCollate(batch):
 def collect_images(img_path):
     #collect images for the model
     img=Image.open(img_path)
+    img=img.resize(224,224)
     return img
 
 def data_augmentation_train(mean,std_dev):
