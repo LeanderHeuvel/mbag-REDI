@@ -22,7 +22,6 @@ model_urls = {
 
 class Bottleneck(nn.Module):
     expansion = 4
-
     def __init__(self, inplanes, planes, stride=1, downsample=None, kernel_size=1):
         super(Bottleneck, self).__init__()
         # print('Creating bottleneck with kernel size {} and stride {} with padding {}'.format(kernel_size, stride, (kernel_size - 1) // 2))
