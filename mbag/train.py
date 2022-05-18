@@ -18,7 +18,7 @@ import torch.optim as optim
 
 import matplotlib.pyplot as plt
 from torchvision import transforms
-from pytorchtools import EarlyStopping
+from utils.pytorchtools import EarlyStopping
 import torch.nn.functional as F
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
@@ -26,7 +26,7 @@ from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from openpyxl import Workbook
 from torchsummary import summary
 
-import utils
+import utils.utils as utils
 import mbag
 
 def results_store_excel(correct_train,total_images_train,train_loss,correct_test,total_images_test,test_loss,epoch,conf_mat_train,conf_mat_test):

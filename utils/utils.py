@@ -26,6 +26,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn import metrics, utils
 from collections import Counter
+from sklearn.model_selection import GroupShuffleSplit
 
 groundtruth_dic={'benign':0,'malignant':1}
 inverted_groundtruth_dic={0:'benign',1:'malignant'}
@@ -34,7 +35,7 @@ views_allowed=['LCC','LMLO','RCC','RMLO']
 # CUDA for PyTorch
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda:0" if use_cuda else "cpu")
-cluster_data_path_prefix='../' #your image path
+cluster_data_path_prefix='<filename>' #your image path
 
 class MyCrop:
     """Randomly crop the sides."""
@@ -113,10 +114,10 @@ class MyPaddingLongerSide:
             img=TF.pad(img,(diff,0,0,0),0,'constant')
         return img
     
-class BreastCancerDataset_generator(Dataset):
+class BreastCancerDataset_generator(Dataset): #changed this
     """Face Landmarks dataset."""
 
-    def __init__(self, df, modality, transform=None):
+    def __init__(self, df, modality, flipimage, transform=None):
         """
         Args:
             csv_file (string): Path to the csv file with annotations.
@@ -125,24 +126,26 @@ class BreastCancerDataset_generator(Dataset):
                 on a sample.
         """
         self.df = df
-        #print("df index:",self.df.index.values)
         self.modality = modality
         self.transform = transform
+        self.flipimage = flipimage
+        self.hflip_img = MyHorizontalFlip()
 
     def __len__(self):
         return self.df.shape[0]
 
     def __getitem__(self, idx):
         data=self.df.iloc[idx]
-        studyuid_path=cluster_data_path_prefix+str(data['FullPath'])
-        img=collect_images(studyuid_path)
-        # img = img.convert(mode="L")
-        #print("views_saved:",views_saved)
-        #hflip_img = MyHorizontalFlip()
+        #studyuid_path=cluster_data_path_prefix+str(data['FullPath'])
+        img, breast_side=collect_images(data)
+        if self.flipimage:
+            img=self.hflip_img(img,breast_side)
         if self.transform:
             img=self.transform(img)
         #print("after transformation:",img.shape)
-        img=img[0,:,:].unsqueeze(0)
+        img=img[0,:,:]
+        img=img.unsqueeze(0).unsqueeze(1)
+        # img=img[0,:,:].unsqueeze(0)
         return idx, img, torch.tensor(groundtruth_dic[data['Groundtruth']])
 
 def MyCollate(batch):
@@ -159,12 +162,17 @@ def MyCollate(batch):
         i+=1
     index = torch.LongTensor(index)
     target = torch.LongTensor(target)
-    return [index, data, target]#, views_names]
+    return [index, data, target]#, views_names
 
-def collect_images(img_path):
+def collect_images(data): #changed this
     #collect images for the model
-    img=Image.open(img_path)
-    return img
+    if data['Views'] in views_allowed:
+        img_path = str(data['FullPath'])
+        img = Image.open(img_path)
+        return img, data['Views'][0]
+    else:
+        print('error in view')
+        sys.exit()
 
 def data_augmentation_train(mean,std_dev):
     preprocess_train = transforms.Compose([
@@ -175,7 +183,7 @@ def data_augmentation_train(mean,std_dev):
         transforms.RandomAdjustSharpness(sharpness_factor=0.20),
         MyGammaCorrection(0.20),
         MyPaddingLongerSide(),
-        transforms.Resize((1400,1400)),
+        transforms.Resize((1600,1600)),
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std_dev)
     ])
@@ -219,6 +227,37 @@ def class_distribution_weightedloss(df):
     print(class_weight)
     return torch.tensor(class_weight,dtype=torch.float32).to(device)
 
+def class_distribution_poswt(df): #added this
+    class_count=df.groupby(by=['Groundtruth']).size()
+    pos_wt=torch.tensor([float(class_count['benign'])/class_count['malignant']])
+    print(pos_wt)
+    return pos_wt
+
+def stratifiedgroupsplit(df, rand_seed):
+    groups = df.groupby('Groundtruth')
+    all_train = []
+    all_test = []
+    all_val = []
+    train_testsplit = GroupShuffleSplit(test_size=0.15, n_splits=2, random_state=rand_seed)
+    train_valsplit = GroupShuffleSplit(test_size=0.10, n_splits=2, random_state=rand_seed)
+    for group_id, group in groups:
+        # if a group is already taken in test or train it must stay there
+        group = group[~group['Patient_Id'].isin(all_train+all_val+all_test)]
+        # if group is empty 
+        if group.shape[0] == 0:
+            continue
+        train_inds1, test_inds = next(train_testsplit.split(group, groups=group['Patient_Id']))
+        train_inds, val_inds = next(train_valsplit.split(group.iloc[train_inds1], groups=group.iloc[train_inds1]['Patient_Id']))
+    
+        all_train += group.iloc[train_inds1].iloc[train_inds]['Patient_Id'].tolist()
+        all_val += group.iloc[train_inds1].iloc[val_inds]['Patient_Id'].tolist()
+        all_test += group.iloc[test_inds]['Patient_Id'].tolist()
+        
+    train = df[df['Patient_Id'].isin(all_train)]
+    val = df[df['Patient_Id'].isin(all_val)]
+    test = df[df['Patient_Id'].isin(all_test)]
+    return train, val, test
+
 def performance_metrics(conf_mat,y_true,y_pred,y_prob):
     prec=metrics.precision_score(y_true,y_pred,pos_label=1)
     rec=metrics.recall_score(y_true,y_pred) #sensitivity, TPR
@@ -228,13 +267,6 @@ def performance_metrics(conf_mat,y_true,y_pred,y_prob):
     bal_acc=(rec+spec)/2
     cohen_kappa=metrics.cohen_kappa_score(y_true,y_pred)
     auc=metrics.roc_auc_score(y_true,y_prob)
-    
-    '''prec=conf_mat[1,1]/np.sum(conf_mat[:,1])
-    rec=conf_mat[1,1]/np.sum(conf_mat[1,:])
-    spec=conf_mat[0,0]/np.sum(conf_mat[0,:])
-    f1=(2*prec*rec)/(prec+rec)
-    acc=(conf_mat[0,0]+conf_mat[1,1])/np.sum(conf_mat)
-    bal_acc=(rec+spec)/2'''
     each_model_metrics=[prec,rec,spec,f1,acc,bal_acc,cohen_kappa,auc]
     return each_model_metrics
     
