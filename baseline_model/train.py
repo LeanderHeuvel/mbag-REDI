@@ -18,7 +18,7 @@ import torch.optim as optim
 
 import matplotlib.pyplot as plt
 from torchvision import transforms
-from pytorchtools import EarlyStopping
+from utils.pytorchtools import EarlyStopping
 import torch.nn.functional as F
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
@@ -26,8 +26,7 @@ from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from openpyxl import Workbook
 from torchsummary import summary
 
-
-import utils
+import utils.utils as utils
 import resnet
 
 def results_store_excel(correct_train,total_images_train,train_loss,correct_test,total_images_test,test_loss,epoch,conf_mat_train,conf_mat_test):
@@ -93,7 +92,7 @@ def optimizer_fn():
 
 def loss_fn_softmax(weighted_cost_func, class_weights=None):
     if weighted_cost_func:
-        criterion=nn.CrossEntropyLoss(class_weights)
+        criterion=nn.CrossEntropyLoss(torch.tensor([1,class_weights[0]]).float().to(device))
     else:
         criterion=nn.CrossEntropyLoss()
     return criterion
@@ -110,7 +109,7 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
         start_epoch=0
     
     if weighted_cost_func:
-        class_weights = utils.class_distribution_weightedloss(df_train)
+        class_weights = utils.class_distribution_poswt(df_train)
     else:
         class_weights = None
     
@@ -125,7 +124,7 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
         conf_mat_train=np.zeros((2,2))
         total_images_train=0
         batch_no=0
-        loss_ar_train=[]
+        #loss_ar_train=[]
         for train_idx, train_batch, train_labels in data_iterator_train:
             train_batch = train_batch.to(device)
             train_labels = train_labels.to(device)
@@ -147,21 +146,21 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
             #performance metrics of training dataset
             correct_train,total_images_train,conf_mat_train,_=conf_mat_create(pred, train_labels, correct_train, total_images_train, conf_mat_train)
             batch_no=batch_no+1
-            if batch_no:
-                loss_ar_train.append(float(loss_train)/total_images_train)
+            #if batch_no:
+            #    loss_ar_train.append(float(loss_train)/total_images_train)
             print('Train: Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(epoch+1, epochs, batch_no, batches_train, loss.item()))
         
-        correct_test,total_images_test,loss_test,conf_mat_test,loss_ar_val=validation(model, data_iterator_test, epoch, batches_val)
+        correct_test,total_images_test,loss_test,conf_mat_test=validation(model, data_iterator_test, epoch, batches_val)
         #print("total images in the whole training data for one epoch of training and test:",total_images_train,total_images_test)
         results_store_excel(correct_train,total_images_train,loss_train,correct_test,total_images_test,loss_test,epoch, conf_mat_train, conf_mat_test)
         valid_loss=loss_test/total_images_test
         
-        if epoch==start_epoch:
+        '''if epoch==start_epoch:
             loss_np_train=np.array([loss_ar_train])
             loss_np_val=np.array([loss_ar_val])
         else:
             loss_np_train=np.append(loss_np_train,[np.array(loss_ar_train)],axis=0)
-            loss_np_val=np.append(loss_np_val,[np.array(loss_ar_val)],axis=0)
+            loss_np_val=np.append(loss_np_val,[np.array(loss_ar_val)],axis=0)'''
         # early_stopping needs the validation loss to check if it has decresed, 
         # and if it has, it will make a checkpoint of the current model
         early_stopping(valid_loss,model,optimizer,epoch,conf_mat_train,conf_mat_test)
@@ -176,12 +175,12 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
     sheet2.append([0,1])
     for row in early_stopping.conf_mat_test_best.tolist():
         sheet2.append(row)
-    np_out=open('train_loss_batches.npy','wb')
+    '''np_out=open('train_loss_batches.npy','wb')
     np.save(np_out,loss_np_train)
     np_out.close()
     np_out2=open('val_loss_batches.npy','wb')
     np.save(np_out2,loss_np_val)
-    np_out2.close()
+    np_out2.close()'''
     print('Finished Training')
     
 def validation(model, data_iterator_val, epoch, batches_val):
@@ -194,13 +193,13 @@ def validation(model, data_iterator_val, epoch, batches_val):
     batch_val_no=0
     conf_mat_test=np.zeros((2,2))
     if weighted_cost_func:
-        class_weights_val = utils.class_distribution_weightedloss(df_val)
+        class_weights_val = utils.class_distribution_poswt(df_val)
     else:
         class_weights_val = None
     
     if activation=='softmax':
         lossfn1 = loss_fn_softmax(weighted_cost_func, class_weights_val)
-    loss_ar_val=[]
+    #loss_ar_val=[]
     with torch.no_grad():   
         for val_idx, val_batch, val_labels in data_iterator_val:
             val_batch, val_labels=val_batch.to(device), val_labels.to(device)
@@ -214,8 +213,8 @@ def validation(model, data_iterator_val, epoch, batches_val):
             val_loss += val_labels.size()[0]*loss1 # sum up batch loss
             correct,total_images,conf_mat_test,_=conf_mat_create(val_pred,val_labels,correct,total_images,conf_mat_test)
             batch_val_no+=1
-            if batch_val_no:
-                loss_ar_val.append(float(val_loss)/s) 
+            #if batch_val_no:
+            #    loss_ar_val.append(float(val_loss)/s) 
             print('Val: Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(epoch+1, max_epochs, batch_val_no, batches_val, loss1))
     
     print("conf_mat_test:",conf_mat_test)
@@ -224,7 +223,7 @@ def validation(model, data_iterator_val, epoch, batches_val):
     print('\nTest set: total val loss: {:.4f}, Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%), Epoch:{}\n'.format(
         val_loss, val_loss/total_images, correct, total_images,
         100. * correct / total_images,epoch+1))
-    return correct,total_images,val_loss,conf_mat_test,loss_ar_val#,n_p_ratio_val
+    return correct,total_images,val_loss,conf_mat_test#,n_p_ratio_val
 
 def test(model, data_iterator_test, batches_test):
     """Testing"""
@@ -293,10 +292,11 @@ if __name__=='__main__':
     groundtruth_list=[]
     acc_num_firstsubset=[]
     use_pretrained=True
-    batch_size=4
-    num_workers=2
+    batch_size=15
+    num_workers=10
     mean=[0.5,0.5,0.5]
     std_dev=[0.5,0.5,0.5]
+    rand_seed=8
     
     #some settings for the type of model I am training
     activation='softmax' #Kim et al:softmax; 
@@ -304,30 +304,31 @@ if __name__=='__main__':
     milpooling='average' #Kim et al:average; 
     weighted_cost_func=False #for class imbalance handling, set as True otherwise False
     model_type='single_pipeline' 
+    flipimage=True #added this
     
-    torch.manual_seed(8)
-    torch.cuda.manual_seed(8)
-    np.random.seed(8)
+    torch.manual_seed(rand_seed)
+    torch.cuda.manual_seed(rand_seed)
+    np.random.seed(rand_seed)
     
     # CUDA for PyTorch
-    
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda:0" if use_cuda else "cpu")
     print(device)
     
     #Output file names
     file_name="sota_singlepipeline_MILpoolingavg_softmax_variableview_batch15_pe10_oldresult_run2_"+modality #name of the output files that will be created
-    path_to_model="models/"+file_name+".tar" #name of the folder where to save the models
-    path_to_results="results/"+file_name+".xlsx"
-    path_to_results_text="results/"+file_name+".txt"
-    if not os.path.exists('models'):
-        os.mkdir('models')
-    if not os.path.exists('results'):
-        os.mkdir('results')
+    path_to_model="/home/spathak/multiview_mammogram/models/"+file_name+".tar" #name of the folder where to save the models
+    path_to_results="/home/spathak/multiview_mammogram/results/"+file_name+".xlsx"
+    path_to_results_text="/home/spathak/multiview_mammogram/results/"+file_name+".txt"
+    path_to_log_file="/home/spathak/multiview_mammogram/results/"+file_name+"_log"+".txt"
+    if not os.path.exists('/home/spathak/multiview_mammogram/models'):
+        os.mkdir('/home/spathak/multiview_mammogram/models')
+    if not os.path.exists('/home/spathak/multiview_mammogram/results'):
+        os.mkdir('/home/spathak/multiview_mammogram/results')
     
     #input file names
-    csv_file_modality='MG_training_files_cbis-ddsm_singleinstance_groundtruth_adapted.csv' #name of the file which contains path to the images and other information of the images. 
-    df_modality=pd.read_csv(csv_file_modality, sep=';')
+    csv_file_modality='input-filename.csv' #name of the file which contains path to the images and other information of the images. 
+    df_modality=pd.read_csv(csv_file_modality,sep=';')
     #df_modality=df_modality[~df_modality['StudyInstanceUID'].isnull()]
     #print("the original df modality shape:",df_modality.shape)
     #df_modality=df_modality[~df_modality['Views'].isnull()]
@@ -343,8 +344,11 @@ if __name__=='__main__':
     #print("df_modality 4 views:", df_modality1.shape)
     
     #Train-val-test split
-    df_train, df_test= train_test_split(df_modality,test_size=0.05,shuffle=True,stratify=df_modality['Groundtruth'])
-    df_train, df_val= train_test_split(df_train,test_size=0.05,shuffle=True,stratify=df_train['Groundtruth'])
+    #df_train, df_test= train_test_split(df_modality,test_size=0.05,shuffle=True,stratify=df_modality['Groundtruth'])
+    #df_train, df_val= train_test_split(df_train,test_size=0.05,shuffle=True,stratify=df_train['Groundtruth'])
+    
+    df_train, df_val, df_test = utils.stratifiedgroupsplit(df_modality, rand_seed)
+    total_instances=df_modality.shape[0]
     
     df_train = df_train.reset_index()
     df_val = df_val.reset_index()
@@ -378,25 +382,26 @@ if __name__=='__main__':
         sheet3 = wb.create_sheet('confusion matrix test') 
         sheet4 = wb.create_sheet('metrics view wise')
     
-    model = resnet.resnet50() #change this line to resnet18,resnet50 or bagnet() whatever you want to use
+    model = resnet.resnet18() #this is the line referring to your resnet model. This is the resnet code form pytorch github code. You have to change this input to 1 channel from 3 channels. 
     model.to(device)
+    pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     
     preprocess_train=utils.data_augmentation_train(mean,std_dev)
     
     preprocess_val = transforms.Compose([
-        transforms.Resize((1000,1000)),
+        transforms.Resize((1600,1600)),
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std_dev)
     ])
     
-    dataset_gen_train = utils.BreastCancerDataset_generator(df_train,modality,preprocess_train)
-    dataloader_train = DataLoader(dataset_gen_train, batch_size=batch_size, shuffle=True, num_workers=num_workers) #, collate_fn=utils.MyCollate)   
+    dataset_gen_train = utils.BreastCancerDataset_generator(df_train,modality,flipimage,preprocess_train)
+    dataloader_train = DataLoader(dataset_gen_train, batch_size=batch_size, shuffle=True, num_workers=num_workers, collate_fn=utils.MyCollate)   
     
-    dataset_gen_val = utils.BreastCancerDataset_generator(df_val,modality,preprocess_val)
-    dataloader_val = DataLoader(dataset_gen_val, batch_size=batch_size, shuffle=False, num_workers=num_workers)#, collate_fn=utils.MyCollate)
+    dataset_gen_val = utils.BreastCancerDataset_generator(df_val,modality,flipimage,preprocess_val)
+    dataloader_val = DataLoader(dataset_gen_val, batch_size=batch_size, shuffle=False, num_workers=num_workers, collate_fn=utils.MyCollate)
     
-    dataset_gen_test = utils.BreastCancerDataset_generator(df_test,modality,preprocess_val)
-    dataloader_test = DataLoader(dataset_gen_test, batch_size=batch_size, shuffle=False, num_workers=num_workers)#, collate_fn=utils.MyCollate)
+    dataset_gen_test = utils.BreastCancerDataset_generator(df_test,modality,flipimage,preprocess_val)
+    dataloader_test = DataLoader(dataset_gen_test, batch_size=batch_size, shuffle=False, num_workers=num_workers, collate_fn=utils.MyCollate)
     
     batches_train=int(math.ceil(train_instances/batch_size))
     batches_val=int(math.ceil(val_instances/batch_size))
@@ -413,7 +418,12 @@ if __name__=='__main__':
     #plot the training and validation loss and accuracy
     df=pd.read_excel(path_to_results)
     results_plot(df,file_name)
-    print("End time:",datetime.datetime.now())
-    print("Execution time:",datetime.datetime.now() - begin_time)
+    
+    f = open(path_to_log_file,'w')
+    f.write("Model parameters:"+str(pytorch_total_params/math.pow(10,6))+'\n')
+    f.write("Start time:"+str(begin_time)+'\n')
+    f.write("End time:"+str(datetime.datetime.now())+'\n')
+    f.write("Execution time:"+str(datetime.datetime.now() - begin_time)+'\n')
+    f.close()
    
     
