@@ -320,14 +320,14 @@ if __name__=='__main__':
     
     #Output file names
     file_name="sota_singlepipeline_MILpoolingavg_softmax_variableview_batch15_pe10_oldresult_run2_"+modality #name of the output files that will be created
-    path_to_model="/home/spathak/multiview_mammogram/models/"+file_name+".tar" #name of the folder where to save the models
-    path_to_results="/home/spathak/multiview_mammogram/results/"+file_name+".xlsx"
-    path_to_results_text="/home/spathak/multiview_mammogram/results/"+file_name+".txt"
-    path_to_log_file="/home/spathak/multiview_mammogram/results/"+file_name+"_log"+".txt"
-    if not os.path.exists('/home/spathak/multiview_mammogram/models'):
-        os.mkdir('/home/spathak/multiview_mammogram/models')
-    if not os.path.exists('/home/spathak/multiview_mammogram/results'):
-        os.mkdir('/home/spathak/multiview_mammogram/results')
+    path_to_model="/multiview_mammogram/models/"+file_name+".tar" #name of the folder where to save the models
+    path_to_results="/multiview_mammogram/results/"+file_name+".xlsx"
+    path_to_results_text="/multiview_mammogram/results/"+file_name+".txt"
+    path_to_log_file="/multiview_mammogram/results/"+file_name+"_log"+".txt"
+    if not os.path.exists('/multiview_mammogram/models'):
+        os.mkdir('/multiview_mammogram/models')
+    if not os.path.exists('/multiview_mammogram/results'):
+        os.mkdir('/multiview_mammogram/results')
     
     #input file names
     csv_file_modality='input-filename.csv' #name of the file which contains path to the images and other information of the images. 
