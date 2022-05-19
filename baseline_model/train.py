@@ -26,7 +26,7 @@ from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from openpyxl import Workbook
 from torchsummary import summary
 
-import ..utils.utils as utils
+from ..utils.utils import utils
 import resnet
 
 def results_store_excel(correct_train,total_images_train,train_loss,correct_test,total_images_test,test_loss,epoch,conf_mat_train,conf_mat_test):
