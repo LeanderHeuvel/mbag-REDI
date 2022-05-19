@@ -28,8 +28,9 @@ from sklearn.metrics import confusion_matrix
 from torch.utils.data import DataLoader
 import openpyxl as op
 from openpyxl import Workbook
+from sklearn.model_selection import 
 
-from utils.utils import utils
+import utils.utils as utils
 import resnet
 
 def results_store_excel(correct_train,total_images_train,train_loss,correct_test,total_images_test,test_loss,epoch,conf_mat_train,conf_mat_test):
