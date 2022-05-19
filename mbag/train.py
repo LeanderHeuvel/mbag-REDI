@@ -26,7 +26,7 @@ from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from openpyxl import Workbook
 from torchsummary import summary
 
-import utils.utils as utils
+import ..utils.utils as utils
 import mbag
 
 def results_store_excel(correct_train,total_images_train,train_loss,correct_test,total_images_test,test_loss,epoch,conf_mat_train,conf_mat_test):
@@ -382,7 +382,7 @@ if __name__=='__main__':
     preprocess_train=utils.data_augmentation_train(mean,std_dev)
     
     preprocess_val = transforms.Compose([
-        transforms.Resize((500,500)), #original was 1600 by 1600
+        transforms.Resize((500,500)), #original was 1600 by 1600    
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std_dev)
     ])
