@@ -28,7 +28,6 @@ from sklearn.metrics import confusion_matrix
 from torch.utils.data import DataLoader
 import openpyxl as op
 from openpyxl import Workbook
-from sklearn.model_selection import 
 
 import utils.utils as utils
 import resnet
