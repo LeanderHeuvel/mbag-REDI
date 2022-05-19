@@ -67,9 +67,9 @@ class Bottleneck_18(nn.Module):
         # print('Creating bottleneck with kernel size {} and stride {} with padding {}'.format(kernel_size, stride, (kernel_size - 1) // 2))
         self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
-        self.conv2 = nn.Conv2d(planes, planes, kernel_size=kernel_size, stride=stride,
+        self.conv2 = nn.Conv2d(planes, planes * 4, kernel_size=kernel_size, stride=stride,
                                padding=0, bias=False) # changed padding from (kernel_size - 1) // 2
-        self.bn2 = nn.BatchNorm2d(planes)
+        self.bn2 = nn.BatchNorm2d(planes * 4)
         # self.conv3 = nn.Conv2d(planes, planes * 4, kernel_size=1, bias=False)
         # self.bn3 = nn.BatchNorm2d(planes * 4)
         
