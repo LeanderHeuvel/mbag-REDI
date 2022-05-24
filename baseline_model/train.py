@@ -10,9 +10,7 @@ import math
 import torch
 import datetime
 import sys
-#ugly but useful
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(SCRIPT_DIR))
+
 
 import numpy as np
 import pandas as pd
@@ -29,6 +27,9 @@ from torch.utils.data import DataLoader
 import openpyxl as op
 from openpyxl import Workbook
 
+#ugly but useful
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
 import utils.utils as utils
 import resnet
 

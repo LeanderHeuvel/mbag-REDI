@@ -9,6 +9,7 @@ import os
 import math
 import torch
 import datetime
+import sys
 
 import numpy as np
 import pandas as pd
@@ -26,7 +27,11 @@ from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from openpyxl import Workbook
 from torchsummary import summary
 
-import ..utils.utils as utils
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
+import utils.utils as utils
 import mbag
 
 def results_store_excel(correct_train,total_images_train,train_loss,correct_test,total_images_test,test_loss,epoch,conf_mat_train,conf_mat_test):
@@ -54,7 +59,7 @@ def results_plot(df, file_name):
     plt.xlabel('Epochs')
     plt.ylabel('Recall')
     plt.title(file_name)
-    plt.savefig('/home/spathak/multiview_mammogram/results/'+file_name+'.png')
+    plt.savefig('/multiview_mammogram/results/'+file_name+'.png')
     plt.show()
 
 def conf_mat_create(predicted,true,correct,total_images,conf_mat):
