@@ -18,7 +18,6 @@ import numpy as np
 import sys
 import random
 import matplotlib.pyplot as plt
-#import cv2
 import seaborn as sns
 from sklearn import metrics, utils
 from collections import Counter

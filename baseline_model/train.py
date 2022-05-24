@@ -57,7 +57,7 @@ def results_plot(df, file_name):
     plt.xlabel('Epochs')
     plt.ylabel('Recall')
     plt.title(file_name)
-    plt.savefig('/home/spathak/multiview_mammogram/results/'+file_name+'.png')
+    plt.savefig('multiview_mammogram/results/'+file_name+'.png')
     plt.show()
 
 def conf_mat_create(predicted,true,correct,total_images,conf_mat):
@@ -295,8 +295,8 @@ if __name__=='__main__':
     groundtruth_list=[]
     acc_num_firstsubset=[]
     use_pretrained=True
-    batch_size=15
-    num_workers=10
+    batch_size=4
+    num_workers=2
     mean=[0.5,0.5,0.5]
     std_dev=[0.5,0.5,0.5]
     rand_seed=8
