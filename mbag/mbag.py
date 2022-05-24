@@ -1,7 +1,3 @@
-'''
-BagNet code adapted from https://github.com/wielandbrendel/bag-of-local-features-models.git
-
-'''
 import torch.nn as nn
 import math
 from torch.utils import model_zoo
@@ -20,6 +16,7 @@ model_urls = {
 
 class Bottleneck(nn.Module):
     expansion = 4
+
     def __init__(self, inplanes, planes, stride=1, downsample=None, kernel_size=1):
         super(Bottleneck, self).__init__()
         # print('Creating bottleneck with kernel size {} and stride {} with padding {}'.format(kernel_size, stride, (kernel_size - 1) // 2))
@@ -60,6 +57,49 @@ class Bottleneck(nn.Module):
 
         return out
 
+class Bottleneck_18(nn.Module):
+    expansion = 4
+
+    def __init__(self, inplanes, planes, stride=1, downsample=None, kernel_size=1):
+        super(Bottleneck_18, self).__init__()
+        # print('Creating bottleneck with kernel size {} and stride {} with padding {}'.format(kernel_size, stride, (kernel_size - 1) // 2))
+        self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.conv2 = nn.Conv2d(planes, planes * 4, kernel_size=kernel_size, stride=stride,
+                               padding=0, bias=False) # changed padding from (kernel_size - 1) // 2
+        self.bn2 = nn.BatchNorm2d(planes * 4)
+        # self.conv3 = nn.Conv2d(planes, planes * 4, kernel_size=1, bias=False)
+        # self.bn3 = nn.BatchNorm2d(planes * 4)
+        
+        self.relu = nn.ReLU(inplace=True)
+        self.downsample = downsample
+        self.stride = stride
+
+    def forward(self, x, **kwargs):
+        residual = x
+        
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+        out = self.relu(out)
+
+        # out = self.conv3(out)
+        # out = self.bn3(out)
+
+        if self.downsample is not None:
+            residual = self.downsample(x)
+        
+        if residual.size(-1) != out.size(-1):
+            diff = residual.size(-1) - out.size(-1)
+            residual = residual[:,:,:-diff,:-diff]
+        
+        out += residual
+        out = self.relu(out)
+
+        return out
 
 class BagNet(nn.Module):
 
@@ -157,4 +197,14 @@ def bagnet9(pretrained=False, strides=[2, 2, 2, 1], **kwargs):
     model = BagNet(Bottleneck, [3, 4, 6, 3], strides=strides, kernel3=[1,1,0,0], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['bagnet9']))
+    return model
+
+def bagnet9_18(pretrained=False, strides=[2, 2, 2, 1], **kwargs):
+    """Constructs a Bagnet-9 model.
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = BagNet(Bottleneck_18, [2, 2, 2, 2], strides=strides, kernel3=[1,1,0,0], **kwargs)
+    # if pretrained:
+    #     model.load_state_dict(model_zoo.load_url(model_urls['bagnet9']))
     return model
