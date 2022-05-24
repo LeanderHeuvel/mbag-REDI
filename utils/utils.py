@@ -161,7 +161,7 @@ def MyCollate(batch):
 def collect_images(data): #changed this
     #collect images for the model
     if data['Views'] in views_allowed:
-        img_path =cluster_data_path_prefix + str(data['FullPath'])
+        img_path = cluster_data_path_prefix + str(data['FullPath'])
         img = Image.open(img_path)
         return img, data['Views'][0]
     else:

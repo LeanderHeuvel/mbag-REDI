@@ -324,6 +324,7 @@ if __name__=='__main__':
     path_to_model="models/"+file_name+".tar" #name of the folder where to save the models
     path_to_results="results/"+file_name+".xlsx"
     path_to_results_text="results/"+file_name+".txt"
+    path_to_log_file="multiview_mammogram/results/"+file_name+"_log"+".txt"
     if not os.path.exists('models'):
         os.mkdir('models')
     if not os.path.exists('results'):
@@ -384,6 +385,7 @@ if __name__=='__main__':
     
     model = mbag.bagnet9_18() #change this line to resnet18,resnet50 or bagnet() whatever you want to use
     model.to(device)
+    pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     
     preprocess_train=utils.data_augmentation_train(mean,std_dev)
     
@@ -394,13 +396,13 @@ if __name__=='__main__':
     ])
     
     dataset_gen_train = utils.BreastCancerDataset_generator(df_train,modality,preprocess_train)
-    dataloader_train = DataLoader(dataset_gen_train, batch_size=batch_size, shuffle=True, num_workers=num_workers) #, collate_fn=utils.MyCollate)   
+    dataloader_train = DataLoader(dataset_gen_train, batch_size=batch_size, shuffle=True, num_workers=num_workers , collate_fn=utils.MyCollate)   
     
     dataset_gen_val = utils.BreastCancerDataset_generator(df_val,modality,preprocess_val)
-    dataloader_val = DataLoader(dataset_gen_val, batch_size=batch_size, shuffle=False, num_workers=num_workers)#, collate_fn=utils.MyCollate)
+    dataloader_val = DataLoader(dataset_gen_val, batch_size=batch_size, shuffle=False, num_workers=num_workers, collate_fn=utils.MyCollate)
     
     dataset_gen_test = utils.BreastCancerDataset_generator(df_test,modality,preprocess_val)
-    dataloader_test = DataLoader(dataset_gen_test, batch_size=batch_size, shuffle=False, num_workers=num_workers)#, collate_fn=utils.MyCollate)
+    dataloader_test = DataLoader(dataset_gen_test, batch_size=batch_size, shuffle=False, num_workers=num_workers, collate_fn=utils.MyCollate)
     
     batches_train=int(math.ceil(train_instances/batch_size))
     batches_val=int(math.ceil(val_instances/batch_size))
@@ -419,5 +421,13 @@ if __name__=='__main__':
     results_plot(df,file_name)
     print("End time:",datetime.datetime.now())
     print("Execution time:",datetime.datetime.now() - begin_time)
-   
+
+    f = open(path_to_log_file,'w')
+    f.write("Model parameters:"+str(pytorch_total_params/math.pow(10,6))+'\n')
+    f.write("Start time:"+str(begin_time)+'\n')
+    f.write("End time:"+str(datetime.datetime.now())+'\n')
+    f.write("Execution time:"+str(datetime.datetime.now() - begin_time)+'\n')
+    f.close()
+
+
     
