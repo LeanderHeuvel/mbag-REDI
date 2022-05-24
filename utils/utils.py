@@ -131,7 +131,6 @@ class BreastCancerDataset_generator(Dataset): #changed this
 
     def __getitem__(self, idx):
         data=self.df.iloc[idx]
-        studyuid_path=cluster_data_path_prefix+data
         img, breast_side=collect_images(data)
         if self.flipimage:
             img=self.hflip_img(img,breast_side)
@@ -162,7 +161,7 @@ def MyCollate(batch):
 def collect_images(data): #changed this
     #collect images for the model
     if data['Views'] in views_allowed:
-        img_path = str(data['FullPath'])
+        img_path =cluster_data_path_prefix + str(data['FullPath'])
         img = Image.open(img_path)
         return img, data['Views'][0]
     else:
