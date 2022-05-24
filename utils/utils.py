@@ -30,7 +30,7 @@ views_allowed=['LCC','LMLO','RCC','RMLO']
 # CUDA for PyTorch
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda:0" if use_cuda else "cpu")
-cluster_data_path_prefix='<filename>' #your image path
+cluster_data_path_prefix='../' #your image path
 
 class MyCrop:
     """Randomly crop the sides."""
@@ -131,7 +131,7 @@ class BreastCancerDataset_generator(Dataset): #changed this
 
     def __getitem__(self, idx):
         data=self.df.iloc[idx]
-        #studyuid_path=cluster_data_path_prefix+str(data['FullPath'])
+        studyuid_path=cluster_data_path_prefix+data
         img, breast_side=collect_images(data)
         if self.flipimage:
             img=self.hflip_img(img,breast_side)
