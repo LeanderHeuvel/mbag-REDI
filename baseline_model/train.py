@@ -20,7 +20,7 @@ import torch.optim as optim
 
 import matplotlib.pyplot as plt
 from torchvision import transforms
-from utils.pytorchtools import EarlyStopping
+
 import torch.nn.functional as F
 from sklearn.metrics import confusion_matrix
 from torch.utils.data import DataLoader
@@ -30,6 +30,7 @@ from openpyxl import Workbook
 #ugly but useful
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
+from utils.pytorchtools import EarlyStopping
 import utils.utils as utils
 import resnet
 
