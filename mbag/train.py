@@ -309,6 +309,7 @@ if __name__=='__main__':
     milpooling='average' #Kim et al:average; 
     weighted_cost_func=False #for class imbalance handling, set as True otherwise False
     model_type='single_pipeline' 
+    flipimage = True
     
     torch.manual_seed(8)
     torch.cuda.manual_seed(8)
@@ -395,7 +396,7 @@ if __name__=='__main__':
         transforms.Normalize(mean=mean, std=std_dev)
     ])
     
-    dataset_gen_train = utils.BreastCancerDataset_generator(df_train,modality,preprocess_train)
+    dataset_gen_train = utils.BreastCancerDataset_generator(df_train,modality,flipimage, preprocess_train)
     dataloader_train = DataLoader(dataset_gen_train, batch_size=batch_size, shuffle=True, num_workers=num_workers , collate_fn=utils.MyCollate)   
     
     dataset_gen_val = utils.BreastCancerDataset_generator(df_val,modality,preprocess_val)
