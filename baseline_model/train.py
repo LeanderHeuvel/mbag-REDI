@@ -422,7 +422,7 @@ if __name__=='__main__':
     train(model, dataloader_train, dataloader_val, batches_train, batches_val, max_epochs)
     optimizer = optimizer_fn();
     path_to_trained_model=path_to_model
-    model = load_model(model, optimizer, path_to_trained_model)
+    model, optimizer, epoch_idx = load_model(model, optimizer, path_to_trained_model)
     test(model, dataloader_test, batches_test)
     wb.save(path_to_results)
             
