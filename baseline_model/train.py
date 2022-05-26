@@ -131,6 +131,7 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
         conf_mat_train=np.zeros((2,2))
         total_images_train=0
         batch_no=0
+        idx=0
         #loss_ar_train=[]
         for train_idx, train_batch, train_labels in data_iterator_train:
             train_batch = train_batch.to(device)
@@ -156,8 +157,9 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
             #    loss_ar_train.append(float(loss_train)/total_images_train)
             print('Train: Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(epoch+1, epochs, batch_no, batches_train, loss.item()))
             
-            print(type(loss.item())," ", train_idx)
-            writer.add_scalar('Loss/train',loss.item() , train_idx)
+            # print(type(loss.item())," ", idx)
+            writer.add_scalar('Loss/train',loss.item() , idx)
+            idx+=1
         correct_test,total_images_test,loss_test,conf_mat_test=validation(model, data_iterator_test, epoch, batches_val)
         writer.add_scalar('accuracy/test', (correct_test/total_images_test), epoch)
         #print("total images in the whole training data for one epoch of training and test:",total_images_train,total_images_test)
