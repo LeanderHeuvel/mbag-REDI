@@ -268,7 +268,7 @@ def test(model, data_iterator_test, batches_test):
         
         loss1=lossfn1(output_test, test_labels).item()
         test_loss += test_labels.size()[0]*loss1 # sum up batch loss
-        correct,total_images,conf_mat_test=conf_mat_create(test_pred,test_labels,correct,total_images,conf_mat_test)
+        correct,total_images, conf_mat_test, _=conf_mat_create(test_pred,test_labels,correct,total_images,conf_mat_test)
         batch_test_no+=1
         s=s+test_batch.shape[0]
         print ('Test: Step [{}/{}], Loss: {:.4f}'.format(batch_test_no, batches_test, loss1))
