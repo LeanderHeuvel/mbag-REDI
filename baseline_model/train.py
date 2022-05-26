@@ -154,8 +154,8 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
             batch_no=batch_no+1
             #if batch_no:
             #    loss_ar_train.append(float(loss_train)/total_images_train)
-            writer.add_scalar('Loss/train', loss.item(), train_idx)
             print('Train: Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(epoch+1, epochs, batch_no, batches_train, loss.item()))
+            writer.add_scalar('Loss/train', loss.item(), train_idx)
         correct_test,total_images_test,loss_test,conf_mat_test=validation(model, data_iterator_test, epoch, batches_val)
         writer.add_scalar('accuracy/test', (correct_test/total_images_test), epoch)
         #print("total images in the whole training data for one epoch of training and test:",total_images_train,total_images_test)
