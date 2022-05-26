@@ -155,7 +155,7 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
             #if batch_no:
             #    loss_ar_train.append(float(loss_train)/total_images_train)
             print('Train: Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(epoch+1, epochs, batch_no, batches_train, loss.item()))
-            loss_item = torch.FloatTensor(loss.item())
+            
             print(loss_item)
             writer.add_scalar('Loss/train',loss_item , train_idx)
         correct_test,total_images_test,loss_test,conf_mat_test=validation(model, data_iterator_test, epoch, batches_val)
