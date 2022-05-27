@@ -296,7 +296,7 @@ if __name__=='__main__':
     patience_epoch=10
     groundtruth_dic={'benign':0,'malignant':1}
     classes=[0,1]
-    max_epochs=1
+    max_epochs=50
     count=0
     count1=0
     acc_num_list_final=[]
