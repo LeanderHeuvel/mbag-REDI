@@ -161,6 +161,7 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
             writer.add_scalar('Loss/train',loss.item() , idx)
             idx+=1
         correct_test,total_images_test,loss_test,conf_mat_test=validation(model, data_iterator_test, epoch, batches_val)
+        print('Test accuracy: ', (correct_test/total_images_test))
         writer.add_scalar('accuracy/test', (correct_test/total_images_test), epoch)
         #print("total images in the whole training data for one epoch of training and test:",total_images_train,total_images_test)
         results_store_excel(correct_train,total_images_train,loss_train,correct_test,total_images_test,loss_test,epoch, conf_mat_train, conf_mat_test)
@@ -268,7 +269,7 @@ def test(model, data_iterator_test, batches_test):
         
         loss1=lossfn1(output_test, test_labels).item()
         test_loss += test_labels.size()[0]*loss1 # sum up batch loss
-        correct,total_images, conf_mat_test, _=conf_mat_create(test_pred,test_labels,correct,total_images,conf_mat_test)
+        correct,total_images, conf_mat_test, _ = conf_mat_create(test_pred,test_labels,correct,total_images,conf_mat_test)
         batch_test_no+=1
         s=s+test_batch.shape[0]
         print ('Test: Step [{}/{}], Loss: {:.4f}'.format(batch_test_no, batches_test, loss1))
@@ -420,7 +421,8 @@ if __name__=='__main__':
     
     #training and validation
     train(model, dataloader_train, dataloader_val, batches_train, batches_val, max_epochs)
-    optimizer = optimizer_fn();
+
+    optimizer = optimizer_fn()
     path_to_trained_model=path_to_model
     model, optimizer, epoch_idx = load_model(model, optimizer, path_to_trained_model)
     test(model, dataloader_test, batches_test)

@@ -263,7 +263,7 @@ def test(model, data_iterator_test, batches_test):
         
         loss1=lossfn1(output_test, test_labels).item()
         test_loss += test_labels.size()[0]*loss1 # sum up batch loss
-        correct,total_images,conf_mat_test=conf_mat_create(test_pred,test_labels,correct,total_images,conf_mat_test)
+        correct, total_images, conf_mat_test, _=conf_mat_create(test_pred,test_labels,correct,total_images,conf_mat_test)
         batch_test_no+=1
         s=s+test_batch.shape[0]
         print ('Test: Step [{}/{}], Loss: {:.4f}'.format(batch_test_no, batches_test, loss1))
@@ -349,8 +349,8 @@ if __name__=='__main__':
     #print("df_modality 4 views:", df_modality1.shape)
     
     #Train-val-test split
-    df_train, df_test= train_test_split(df_modality,test_size=0.05,shuffle=True,stratify=df_modality['Groundtruth'])
-    df_train, df_val= train_test_split(df_train,test_size=0.05,shuffle=True,stratify=df_train['Groundtruth'])
+    df_train, df_val, df_test = utils.stratifiedgroupsplit(df_modality, rand_seed)
+    total_instances=df_modality.shape[0]
     
     df_train = df_train.reset_index()
     df_val = df_val.reset_index()
@@ -412,8 +412,9 @@ if __name__=='__main__':
     #training and validation
     train(model, dataloader_train, dataloader_val, batches_train, batches_val, max_epochs)
     
+    optimizer = optimizer_fn()
     path_to_trained_model=path_to_model
-    model = load_model(model, path_to_trained_model)
+    model,  optimizer, epoch_idx = load_model(model, optimizer, path_to_trained_model)
     test(model, dataloader_test, batches_test)
     wb.save(path_to_results)
             
