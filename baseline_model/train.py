@@ -394,7 +394,7 @@ if __name__=='__main__':
         sheet3 = wb.create_sheet('confusion matrix test') 
         sheet4 = wb.create_sheet('metrics view wise')
     
-    model = resnet.resnet18() #this is the line referring to your resnet model. This is the resnet code form pytorch github code. You have to change this input to 1 channel from 3 channels. 
+    model = resnet.resnet18(num_classes=2) #this is the line referring to your resnet model. This is the resnet code form pytorch github code. You have to change this input to 1 channel from 3 channels. 
     model.to(device)
     pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     
