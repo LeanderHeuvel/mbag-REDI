@@ -385,7 +385,7 @@ if __name__=='__main__':
         sheet3 = wb.create_sheet('confusion matrix test') 
         sheet4 = wb.create_sheet('metrics view wise')
     
-    model = mbag.bagnet9(num_classes=2) #change this line to resnet18,resnet50 or bagnet() whatever you want to use
+    model = mbag.bagnet9_18(num_classes=2) #change this line to resnet18,resnet50 or bagnet() whatever you want to use
     model.to(device)
     pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     
