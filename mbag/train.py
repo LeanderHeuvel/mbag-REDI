@@ -298,7 +298,7 @@ if __name__=='__main__':
     groundtruth_list=[]
     acc_num_firstsubset=[]
     use_pretrained=True
-    batch_size=2
+    batch_size=4
     num_workers=2
     mean=[0.5,0.5,0.5]
     std_dev=[0.5,0.5,0.5]
@@ -386,6 +386,7 @@ if __name__=='__main__':
         sheet4 = wb.create_sheet('metrics view wise')
     
     model = mbag.bagnet9_18(num_classes=2) #change this line to resnet18,resnet50 or bagnet() whatever you want to use
+    model= nn.DataParallel(model)
     model.to(device)
     pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     
