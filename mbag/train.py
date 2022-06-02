@@ -302,6 +302,7 @@ if __name__=='__main__':
     num_workers=2
     mean=[0.5,0.5,0.5]
     std_dev=[0.5,0.5,0.5]
+    rand_seed=8
     
     #some settings for the type of model I am training
     activation='softmax' #Kim et al:softmax; 
