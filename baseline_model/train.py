@@ -407,13 +407,13 @@ if __name__=='__main__':
     ])
     
     dataset_gen_train = utils.BreastCancerDataset_generator(df_train,modality,flipimage,preprocess_train)
-    dataloader_train = DataLoader(dataset_gen_train, batch_size=batch_size, shuffle=True, num_workers=num_workers, collate_fn=utils.MyCollate)   
+    dataloader_train = DataLoader(dataset_gen_train, batch_size=batch_size, shuffle=True, collate_fn=utils.MyCollate)   #num_workers=num_workers, 
     
     dataset_gen_val = utils.BreastCancerDataset_generator(df_val,modality,flipimage,preprocess_val)
-    dataloader_val = DataLoader(dataset_gen_val, batch_size=batch_size, shuffle=False, num_workers=num_workers, collate_fn=utils.MyCollate)
+    dataloader_val = DataLoader(dataset_gen_val, batch_size=batch_size, shuffle=False,  collate_fn=utils.MyCollate) #num_workers=num_workers, 
     
     dataset_gen_test = utils.BreastCancerDataset_generator(df_test,modality,flipimage,preprocess_val)
-    dataloader_test = DataLoader(dataset_gen_test, batch_size=batch_size, shuffle=False, num_workers=num_workers, collate_fn=utils.MyCollate)
+    dataloader_test = DataLoader(dataset_gen_test, batch_size=batch_size, shuffle=False,  collate_fn=utils.MyCollate)# num_workers=num_workers, 
     
     batches_train=int(math.ceil(train_instances/batch_size))
     batches_val=int(math.ceil(val_instances/batch_size))
