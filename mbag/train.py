@@ -26,7 +26,7 @@ from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 from openpyxl import Workbook
 
-
+torch.autograd.set_detect_anomaly(True)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
