@@ -30,7 +30,7 @@ views_allowed=['LCC','LMLO','RCC','RMLO']
 # CUDA for PyTorch
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda:0" if use_cuda else "cpu")
-cluster_data_path_prefix='/' #your image path
+cluster_data_path_prefix='../' #your image path
 
 class MyCrop:
     """Randomly crop the sides."""
