@@ -333,7 +333,7 @@ if __name__=='__main__':
         os.mkdir('results')
     
     #input file names
-    csv_file_modality='MG_training_files_cbis-ddsm_singleinstance_groundtruth_adapted.csv' #name of the file which contains path to the images and other information of the images. 
+    csv_file_modality='mbag-REDI/MG_training_files_cbis-ddsm_singleinstance_groundtruth_adapted.csv' #name of the file which contains path to the images and other information of the images. 
     df_modality=pd.read_csv(csv_file_modality, sep=';')
     #df_modality=df_modality[~df_modality['StudyInstanceUID'].isnull()]
     #print("the original df modality shape:",df_modality.shape)
