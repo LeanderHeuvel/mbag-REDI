@@ -393,7 +393,7 @@ if __name__=='__main__':
     preprocess_train=utils.data_augmentation_train(mean,std_dev)
     
     preprocess_val = transforms.Compose([
-        transforms.Resize((1600,1600)), #original was 1600 by 1600
+        transforms.Resize((1300,1300)), #original was 1600 by 1600
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std_dev)
     ])
