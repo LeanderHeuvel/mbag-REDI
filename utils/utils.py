@@ -89,10 +89,10 @@ class MyPadding:
         print(image_padded.shape)
         return image_padded
 
-class MyPaddingLongerSide(image_size=1300):
-    def __init__(self):
-        self.max_height=self.image_size
-        self.max_width=self.image_size
+class MyPaddingLongerSide:
+    def __init__(self,image_size):
+        self.max_height=image_size
+        self.max_width=image_size
         
         
     def __call__(self,img):#,breast_side):
