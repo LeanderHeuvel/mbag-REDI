@@ -10,6 +10,7 @@ import math
 import torch
 import datetime
 import sys
+import argparse
 
 import numpy as np
 import pandas as pd
@@ -22,7 +23,6 @@ from torchvision import transforms
 
 import torch.nn.functional as F
 from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 from openpyxl import Workbook
 
@@ -284,6 +284,10 @@ def test(model, data_iterator_test, batches_test):
     sheet3.append(per_model_metrics)
     
 if __name__=='__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--image_size", help="size of square image with height = width, ", type=int, default=1300)
+    args = parser.parse_args()
+    image_size = args.image_size
     begin_time = datetime.datetime.now()
     #Initialization    
     modality='MG'
@@ -390,10 +394,10 @@ if __name__=='__main__':
     model.to(device)
     pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     
-    preprocess_train=utils.data_augmentation_train(mean,std_dev)
+    preprocess_train=utils.data_augmentation_train(mean,std_dev, image_size)
     
     preprocess_val = transforms.Compose([
-        transforms.Resize((1300,1300)), #original was 1600 by 1600
+        transforms.Resize((image_size,image_size)), #original was 1600 by 1600
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std_dev)
     ])

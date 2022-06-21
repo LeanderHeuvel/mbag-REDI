@@ -89,10 +89,10 @@ class MyPadding:
         print(image_padded.shape)
         return image_padded
 
-class MyPaddingLongerSide:
+class MyPaddingLongerSide(image_size=1300):
     def __init__(self):
-        self.max_height=1600
-        self.max_width=1600
+        self.max_height=self.image_size
+        self.max_width=self.image_size
         
         
     def __call__(self,img):#,breast_side):
@@ -168,7 +168,7 @@ def collect_images(data): #changed this
         print('error in view')
         sys.exit()
 
-def data_augmentation_train(mean,std_dev):
+def data_augmentation_train(mean,std_dev, image_size=1300):
     preprocess_train = transforms.Compose([
         MyCrop(),
         transforms.Pad(100),
@@ -176,8 +176,8 @@ def data_augmentation_train(mean,std_dev):
         transforms.ColorJitter(brightness=0.20, contrast=0.20),
         transforms.RandomAdjustSharpness(sharpness_factor=0.20),
         MyGammaCorrection(0.20),
-        MyPaddingLongerSide(),
-        transforms.Resize((1600,1600)),
+        MyPaddingLongerSide(image_size),
+        transforms.Resize((image_size,image_size)),
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std_dev)
     ])
