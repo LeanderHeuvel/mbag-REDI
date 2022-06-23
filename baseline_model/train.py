@@ -21,7 +21,7 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 from torchvision import transforms
 
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 import torch.nn.functional as F
 from sklearn.metrics import confusion_matrix
 from torch.utils.data import DataLoader
@@ -107,7 +107,7 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
     '''Training'''
     optimizer=optimizer_fn()
     early_stopping = EarlyStopping(path_to_model=path_to_model,patience=patience_epoch,verbose=True)
-    writer = SummaryWriter()
+    # writer = SummaryWriter()
     if os.path.isfile(path_to_model):
         model,optimizer,start_epoch=load_model(model,optimizer,path_to_model)
         optimizer=adaptive_learning_rate(optimizer,start_epoch)
@@ -158,11 +158,11 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
             print('Train: Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(epoch+1, epochs, batch_no, batches_train, loss.item()))
             
             # print(type(loss.item())," ", idx)
-            writer.add_scalar('Loss/train',loss.item() , idx)
+            # writer.add_scalar('Loss/train',loss.item() , idx)
             idx+=1
         correct_test,total_images_test,loss_test,conf_mat_test=validation(model, data_iterator_test, epoch, batches_val)
         print('Test accuracy: ', (correct_test/total_images_test))
-        writer.add_scalar('accuracy/test', (correct_test/total_images_test), epoch)
+        # writer.add_scalar('accuracy/test', (correct_test/total_images_test), epoch)
         #print("total images in the whole training data for one epoch of training and test:",total_images_train,total_images_test)
         results_store_excel(correct_train,total_images_train,loss_train,correct_test,total_images_test,loss_test,epoch, conf_mat_train, conf_mat_test)
         valid_loss=loss_test/total_images_test

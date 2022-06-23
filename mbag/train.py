@@ -109,7 +109,7 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
     early_stopping = EarlyStopping(path_to_model=path_to_model,patience=patience_epoch,verbose=True)
     if os.path.isfile(path_to_model):
         model,optimizer,start_epoch=load_model(model,optimizer,path_to_model)
-        optimizer=adaptive_learning_rate(optimizer,start_epoch)
+        optimizer = adaptive_learning_rate(optimizer,start_epoch)
         print("start epoch:",start_epoch)
     else:
         start_epoch=0
