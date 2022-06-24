@@ -331,14 +331,14 @@ if __name__=='__main__':
     path_to_model="models/"+file_name+".tar" #name of the folder where to save the models
     path_to_results="results/"+file_name+".xlsx"
     path_to_results_text="results/"+file_name+".txt"
-    path_to_log_file="../multiview_mammogram/results/"+file_name+"_log"+".txt"
+    path_to_log_file="/multiview_mammogram/results/"+file_name+"_log"+".txt"
     if not os.path.exists(base_path+'/multiview_mammogram/models'):
         os.mkdir(base_path+'/multiview_mammogram/models')
     if not os.path.exists(base_path+'/multiview_mammogram/results'):
         os.mkdir(base_path+'/multiview_mammogram/results')
     
     #input file names
-    csv_file_modality=base_path+'MG_training_files_cbis-ddsm_singleinstance_groundtruth_adapted.csv' #name of the file which contains path to the images and other information of the images. 
+    csv_file_modality=base_path+'/MG_training_files_cbis-ddsm_singleinstance_groundtruth_adapted.csv' #name of the file which contains path to the images and other information of the images. 
     df_modality=pd.read_csv(csv_file_modality, sep=';')
     #df_modality=df_modality[~df_modality['StudyInstanceUID'].isnull()]
     #print("the original df modality shape:",df_modality.shape)
