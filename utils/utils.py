@@ -163,6 +163,7 @@ def collect_images(data): #changed this
     if data['Views'] in views_allowed:
         img_path = cluster_data_path_prefix + str(data['FullPath'])
         img = Image.open(img_path)
+        img.load()
         return img, data['Views'][0]
     else:
         print('error in view')
