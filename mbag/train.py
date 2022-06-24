@@ -330,7 +330,7 @@ if __name__=='__main__':
     path_to_model="models/"+file_name+".tar" #name of the folder where to save the models
     path_to_results="results/"+file_name+".xlsx"
     path_to_results_text="results/"+file_name+".txt"
-    path_to_log_file="multiview_mammogram/results/"+file_name+"_log"+".txt"
+    path_to_log_file="../multiview_mammogram/results/"+file_name+"_log"+".txt"
     if not os.path.exists('models'):
         os.mkdir('models')
     if not os.path.exists('results'):
