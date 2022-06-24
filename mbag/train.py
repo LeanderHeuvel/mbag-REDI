@@ -326,7 +326,7 @@ if __name__=='__main__':
     print(device)
     
     #Output file names
-    base_path = os.path.abspath(os.getcwd())
+    base_path = os.path.abspath(os.getcwd())+"/mbag-REDI"
     file_name="sota_singlepipeline_MILpoolingavg_softmax_variableview_batch15_pe10_oldresult_run2_bagnet_"+modality #name of the output files that will be created
     path_to_model="models/"+file_name+".tar" #name of the folder where to save the models
     path_to_results="results/"+file_name+".xlsx"
