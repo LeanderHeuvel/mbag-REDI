@@ -286,8 +286,10 @@ def test(model, data_iterator_test, batches_test):
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--image_size", help="size of square image with height = width, ", type=int, default=1300)
+    parser.add_argument("--patch_size", help="image patch size of the model, ", type=int, default=9)
     args = parser.parse_args()
     image_size = args.image_size
+    patch_size = args.patch_size
     begin_time = datetime.datetime.now()
     #Initialization    
     modality='MG'
@@ -389,8 +391,12 @@ if __name__=='__main__':
         sheet2 = wb.create_sheet('confusion matrix train_val')
         sheet3 = wb.create_sheet('confusion matrix test') 
         sheet4 = wb.create_sheet('metrics view wise')
-    
-    model = mbag.bagnet9_18(num_classes=2) #change this line to resnet18,resnet50 or bagnet() whatever you want to use
+    if patch_size==9:
+        model = mbag.bagnet9_18(num_classes=2) #change this line to resnet18,resnet50 or bagnet() whatever you want to use
+    if patch_size==17:
+        model = mbag.bagnet17_18(num_classes=2)
+    if patch_size==33:
+        model = mbag.bagnet33_18(num_classes=2)
     model= nn.DataParallel(model)
     model.to(device)
     pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)

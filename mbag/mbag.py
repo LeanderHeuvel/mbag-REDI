@@ -208,3 +208,23 @@ def bagnet9_18(pretrained=False, strides=[2, 2, 2, 1], **kwargs):
     # if pretrained:
     #     model.load_state_dict(model_zoo.load_url(model_urls['bagnet9']))
     return model
+
+def bagnet17_18(pretrained=False, strides=[2, 2, 2, 1], **kwargs):
+    """Constructs a Bagnet-9 model.
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = BagNet(Bottleneck_18, [2, 2, 2, 2], strides=strides, kernel3=[1,1,1,0], **kwargs)
+    # if pretrained:
+    #     model.load_state_dict(model_zoo.load_url(model_urls['bagnet9']))
+    return model
+
+def bagnet33_18(pretrained=False, strides=[2, 2, 2, 1], **kwargs):
+    """Constructs a Bagnet-9 model.
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = BagNet(Bottleneck_18, [2, 2, 2, 2], strides=strides, kernel3=[1,1,1,1], **kwargs)
+    # if pretrained:
+    #     model.load_state_dict(model_zoo.load_url(model_urls['bagnet9']))
+    return model
