@@ -161,12 +161,12 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
         results_store_excel(correct_train,total_images_train,loss_train,correct_test,total_images_test,loss_test,epoch, conf_mat_train, conf_mat_test)
         valid_loss=loss_test/total_images_test
         
-        if epoch==start_epoch:
-            loss_np_train=np.array([loss_ar_train])
-            loss_np_val=np.array([loss_ar_val])
-        else:
-            loss_np_train=np.append(loss_np_train,[np.array(loss_ar_train)],axis=0)
-            loss_np_val=np.append(loss_np_val,[np.array(loss_ar_val)],axis=0)
+        # if epoch==start_epoch:
+        #     loss_np_train=np.array([loss_ar_train])
+        #     # loss_np_val=np.array([loss_ar_val])
+        # else:
+        #     loss_np_train=np.append(loss_np_train,[np.array(loss_ar_train)],axis=0)
+            # loss_np_val=np.append(loss_np_val,[np.array(loss_ar_val)],axis=0)
         # early_stopping needs the validation loss to check if it has decresed, 
         # and if it has, it will make a checkpoint of the current model
         early_stopping(valid_loss,model,optimizer,epoch,conf_mat_train,conf_mat_test)
