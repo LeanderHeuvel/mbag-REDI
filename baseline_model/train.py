@@ -434,7 +434,7 @@ if __name__=='__main__':
     wb.save(path_to_results)
             
     #plot the training and validation loss and accuracy
-    df=pd.read_excel(path_to_results)
+    df=pd.read_excel(path_to_results, sheet_name='epoch training')
     results_plot(df,file_name)
     
     f = open(path_to_log_file,'w')

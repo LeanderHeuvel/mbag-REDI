@@ -328,10 +328,10 @@ if __name__=='__main__':
     #Output file names
     base_path = os.path.abspath(os.getcwd())+"/mbag-REDI"
     file_name="sota_singlepipeline_MILpoolingavg_softmax_variableview_batch15_pe10_oldresult_run2_bagnet_"+modality #name of the output files that will be created
-    path_to_model="models/"+file_name+".tar" #name of the folder where to save the models
-    path_to_results="results/"+file_name+".xlsx"
-    path_to_results_text="results/"+file_name+".txt"
-    path_to_log_file="/multiview_mammogram/results/"+file_name+"_log"+".txt"
+    path_to_model = base_path+"/multiview_mammogram/models/"+file_name+".tar" #name of the folder where to save the models
+    path_to_results = base_path+"/multiview_mammogram/results/"+file_name+".xlsx"
+    path_to_results_text = base_path+"/multiview_mammogram/results/"+file_name+".txt"
+    path_to_log_file = base_path+"/multiview_mammogram/results/"+file_name+"_log"+".txt"
     if not os.path.exists(base_path+'/multiview_mammogram/models'):
         os.mkdir(base_path+'/multiview_mammogram/models')
     if not os.path.exists(base_path+'/multiview_mammogram/results'):
@@ -426,7 +426,7 @@ if __name__=='__main__':
     wb.save(path_to_results)
             
     #plot the training and validation loss and accuracy
-    df=pd.read_excel(path_to_results)
+    df=pd.read_excel(path_to_results, sheet_name='epoch training')
     results_plot(df,file_name)
     print("End time:",datetime.datetime.now())
     print("Execution time:",datetime.datetime.now() - begin_time)
