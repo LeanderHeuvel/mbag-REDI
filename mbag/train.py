@@ -156,7 +156,7 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
                 loss_ar_train.append(float(loss_train)/total_images_train)
             print('Train: Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(epoch+1, epochs, batch_no, batches_train, loss.item()))
         
-        correct_test,total_images_test,loss_test,conf_mat_test,loss_ar_val=validation(model, data_iterator_test, epoch, batches_val)
+        correct_test,total_images_test,loss_test,conf_mat_test=validation(model, data_iterator_test, epoch, batches_val)
         #print("total images in the whole training data for one epoch of training and test:",total_images_train,total_images_test)
         results_store_excel(correct_train,total_images_train,loss_train,correct_test,total_images_test,loss_test,epoch, conf_mat_train, conf_mat_test)
         valid_loss=loss_test/total_images_test
@@ -199,13 +199,13 @@ def validation(model, data_iterator_val, epoch, batches_val):
     batch_val_no=0
     conf_mat_test=np.zeros((2,2))
     if weighted_cost_func:
-        class_weights_val = utils.class_distribution_weightedloss(df_val)
+        class_weights_val = utils.class_distribution_poswt(df_val)
     else:
         class_weights_val = None
     
     if activation=='softmax':
         lossfn1 = loss_fn_softmax(weighted_cost_func, class_weights_val)
-    loss_ar_val=[]
+    #loss_ar_val=[]
     with torch.no_grad():   
         for val_idx, val_batch, val_labels in data_iterator_val:
             val_batch, val_labels=val_batch.to(device), val_labels.to(device)
@@ -219,8 +219,8 @@ def validation(model, data_iterator_val, epoch, batches_val):
             val_loss += val_labels.size()[0]*loss1 # sum up batch loss
             correct,total_images,conf_mat_test,_=conf_mat_create(val_pred,val_labels,correct,total_images,conf_mat_test)
             batch_val_no+=1
-            if batch_val_no:
-                loss_ar_val.append(float(val_loss)/s) 
+            #if batch_val_no:
+            #    loss_ar_val.append(float(val_loss)/s) 
             print('Val: Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(epoch+1, max_epochs, batch_val_no, batches_val, loss1))
     
     print("conf_mat_test:",conf_mat_test)
@@ -229,7 +229,7 @@ def validation(model, data_iterator_val, epoch, batches_val):
     print('\nTest set: total val loss: {:.4f}, Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%), Epoch:{}\n'.format(
         val_loss, val_loss/total_images, correct, total_images,
         100. * correct / total_images,epoch+1))
-    return correct,total_images,val_loss,conf_mat_test,loss_ar_val#,n_p_ratio_val
+    return correct,total_images,val_loss,conf_mat_test#,n_p_ratio_val
 
 def test(model, data_iterator_test, batches_test):
     """Testing"""
