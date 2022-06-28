@@ -50,17 +50,17 @@ def results_store_excel(correct_train,total_images_train,train_loss,correct_test
     sheet1.append(lines)
     out.close()
 
-def results_plot(df, file_name):
+def results_plot(df, file_name, base_path):
     plt.plot(df['Epoch'],df['Recall Train'],'-r',label='Train Recall')
     plt.plot(df['Epoch'],df['Recall Val'],'-b',label='Val Recall')
     plt.plot(df['Epoch'],df['Avg Loss Train'],'-g',label='Train Loss')
     plt.plot(df['Epoch'],df['Avg Loss Val'],'-y',label='Val Loss')
     plt.legend(loc='upper left')
-    plt.xticks(np.arange(1,df.iloc[-1]['Epoch']))
+    plt.xticks(pd.to_numeric(np.arange(1,df.iloc[-1]['Epoch'])))
     plt.xlabel('Epochs')
     plt.ylabel('Recall')
     plt.title(file_name)
-    plt.savefig('multiview_mammogram/results/'+file_name+'.png')
+    plt.savefig(base_path+'/multiview_mammogram/results/'+file_name+'.png')
     plt.show()
 
 def conf_mat_create(predicted,true,correct,total_images,conf_mat):
@@ -292,7 +292,9 @@ def test(model, data_iterator_test, batches_test):
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--image_size", help="size of square image with height = width, ", type=int, default=1300)
+    parser.add_argument("--train", help="image patch size of the model, ", type=int, default=1)
     args = parser.parse_args()
+    training_required = args.train
     image_size = args.image_size
     begin_time = datetime.datetime.now()
     #Initialization    
@@ -426,8 +428,8 @@ if __name__=='__main__':
     
     #training and validation
     # comment out for evaluation
-    
-    # train(model, dataloader_train, dataloader_val, batches_train, batches_val, max_epochs)
+    if training_required == 1:
+        train(model, dataloader_train, dataloader_val, batches_train, batches_val, max_epochs)
 
     optimizer = optimizer_fn()
     path_to_trained_model=path_to_model
@@ -437,7 +439,12 @@ if __name__=='__main__':
             
     #plot the training and validation loss and accuracy
     df=pd.read_excel(path_to_results, sheet_name='epoch training')
-    results_plot(df,file_name)
+    df_text = pd.read_csv(path_to_results_text, sep=" ", header=None)
+    df_text.columns = ['Epoch','Avg Loss Train','Accuracy Train','Recall Train','Specificity Train','Avg Loss Val','Accuracy Val','Recall Val','Specificity Val']
+    for column in df_text:
+        df_text[column] = df_text[column].str.extract(r'(\d+[.\d]*)')
+    results_plot(df_text,file_name, base_path)
+
     
     f = open(path_to_log_file,'w')
     f.write("Model parameters:"+str(pytorch_total_params/math.pow(10,6))+'\n')
