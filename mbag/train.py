@@ -287,7 +287,9 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--image_size", help="size of square image with height = width, ", type=int, default=1300)
     parser.add_argument("--patch_size", help="image patch size of the model, ", type=int, default=9)
+    parser.add_argument("--train", help="image patch size of the model, ", type=int, default=1)
     args = parser.parse_args()
+    training_required = args.train
     image_size = args.image_size
     patch_size = args.patch_size
     begin_time = datetime.datetime.now()
@@ -423,7 +425,8 @@ if __name__=='__main__':
     batches_test=int(math.ceil(test_instances/batch_size))
     
     #training and validation
-    train(model, dataloader_train, dataloader_val, batches_train, batches_val, max_epochs)
+    if training_required == 1:
+        train(model, dataloader_train, dataloader_val, batches_train, batches_val, max_epochs)
     
     optimizer = optimizer_fn()
     path_to_trained_model=path_to_model

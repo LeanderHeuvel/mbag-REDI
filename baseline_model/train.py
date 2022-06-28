@@ -425,7 +425,9 @@ if __name__=='__main__':
     batches_test=int(math.ceil(test_instances/batch_size))
     
     #training and validation
-    train(model, dataloader_train, dataloader_val, batches_train, batches_val, max_epochs)
+    # comment out for evaluation
+    
+    # train(model, dataloader_train, dataloader_val, batches_train, batches_val, max_epochs)
 
     optimizer = optimizer_fn()
     path_to_trained_model=path_to_model
@@ -443,5 +445,3 @@ if __name__=='__main__':
     f.write("End time:"+str(datetime.datetime.now())+'\n')
     f.write("Execution time:"+str(datetime.datetime.now() - begin_time)+'\n')
     f.close()
-   
-    
