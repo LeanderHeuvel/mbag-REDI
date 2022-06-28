@@ -58,7 +58,7 @@ def results_plot(df, file_name, base_path):
     plt.legend(loc='upper left')
     plt.xticks(np.arange(1,pd.to_numeric(df.iloc[-1]['Epoch'])))
     plt.xlabel('Epochs')
-    plt.ylabel('Recall')
+    plt.ylabel('Accuracy/Loss')
     plt.title(file_name)
     plt.savefig(base_path+'/multiview_mammogram/results/'+file_name+'.png')
     plt.show()
