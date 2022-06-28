@@ -51,10 +51,10 @@ def results_store_excel(correct_train,total_images_train,train_loss,correct_test
     out.close()
 
 def results_plot(df, file_name, base_path):
-    plt.plot(df['Epoch'],df['Recall Train'],'-r',label='Train Recall')
-    plt.plot(df['Epoch'],df['Recall Val'],'-b',label='Val Recall')
-    plt.plot(df['Epoch'],df['Avg Loss Train'],'-g',label='Train Loss')
-    plt.plot(df['Epoch'],df['Avg Loss Val'],'-y',label='Val Loss')
+    plt.plot(pd.to_numeric(df['Epoch']),pd.to_numeric(df['Recall Train']),'-r',label='Train Recall')
+    plt.plot(pd.to_numeric(df['Epoch']),pd.to_numeric(df['Recall Val']),'-b',label='Val Recall')
+    plt.plot(pd.to_numeric(df['Epoch']),pd.to_numeric(df['Avg Loss Train']),'-g',label='Train Loss')
+    plt.plot(pd.to_numeric(df['Epoch']),pd.to_numeric(df['Avg Loss Val']),'-y',label='Val Loss')
     plt.legend(loc='upper left')
     plt.xticks(np.arange(1,pd.to_numeric(df.iloc[-1]['Epoch'])))
     plt.xlabel('Epochs')
