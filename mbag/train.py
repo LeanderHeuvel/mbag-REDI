@@ -50,7 +50,7 @@ def results_store_excel(correct_train,total_images_train,train_loss,correct_test
     sheet1.append(lines)
     out.close()
 
-def results_plot(df, file_name):
+def results_plot(df, file_name, base_path):
     plt.plot(df['Epoch'],df['Recall Train'],'-r',label='Train Recall')
     plt.plot(df['Epoch'],df['Recall Val'],'-b',label='Val Recall')
     plt.plot(df['Epoch'],df['Avg Loss Train'],'-g',label='Train Loss')
@@ -60,7 +60,7 @@ def results_plot(df, file_name):
     plt.xlabel('Epochs')
     plt.ylabel('Recall')
     plt.title(file_name)
-    plt.savefig('/multiview_mammogram/results/'+file_name+'.png')
+    plt.savefig(base_path+'/multiview_mammogram/results/'+file_name+'.png')
     plt.show()
 
 def conf_mat_create(predicted,true,correct,total_images,conf_mat):
@@ -440,7 +440,7 @@ if __name__=='__main__':
     df_text.columns = ['Epoch','Avg Loss Train','Accuracy Train','Recall Train','Specificity Train','Avg Loss Val','Accuracy Val','Recall Val','Specificity Val']
     for column in df_text:
         df_text[column] = df_text[column].str.extract(r'(\d+[.\d]*)')
-    results_plot(df_text,file_name)
+    results_plot(df_text,file_name, base_path)
     print("End time:",datetime.datetime.now())
     print("Execution time:",datetime.datetime.now() - begin_time)
 
