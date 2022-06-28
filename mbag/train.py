@@ -436,7 +436,10 @@ if __name__=='__main__':
             
     #plot the training and validation loss and accuracy
     df=pd.read_excel(path_to_results, sheet_name='epoch training')
-    results_plot(df,file_name)
+    df_text = pd.read_csv(path_to_results_text, sep=" ", header=None)
+    df_text.columns = ['Epoch','Avg Loss Train','Accuracy Train','Recall Train','Specificity Train','Avg Loss Val','Accuracy Val','Recall Val','Specificity Val']
+
+    results_plot(df_text,file_name)
     print("End time:",datetime.datetime.now())
     print("Execution time:",datetime.datetime.now() - begin_time)
 
