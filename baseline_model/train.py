@@ -7,6 +7,7 @@ Created on Wed Sep 22 16:43:24 2021
 
 import os
 import math
+from sympy import pde_separate_mul, pdiv
 import torch
 import datetime
 import sys
@@ -56,7 +57,7 @@ def results_plot(df, file_name, base_path):
     plt.plot(df['Epoch'],df['Avg Loss Train'],'-g',label='Train Loss')
     plt.plot(df['Epoch'],df['Avg Loss Val'],'-y',label='Val Loss')
     plt.legend(loc='upper left')
-    plt.xticks(pd.to_numeric(np.arange(1,df.iloc[-1]['Epoch'])))
+    plt.xticks(np.arange(1,pd.to_numeric(df.iloc[-1]['Epoch'])))
     plt.xlabel('Epochs')
     plt.ylabel('Recall')
     plt.title(file_name)
