@@ -7,7 +7,6 @@ Created on Wed Sep 22 16:43:24 2021
 
 import os
 import math
-from sympy import pde_separate_mul, pdiv
 import torch
 import datetime
 import sys
