@@ -56,7 +56,7 @@ def results_plot(df, file_name):
     plt.plot(df['Epoch'],df['Avg Loss Train'],'-g',label='Train Loss')
     plt.plot(df['Epoch'],df['Avg Loss Val'],'-y',label='Val Loss')
     plt.legend(loc='upper left')
-    plt.xticks(np.arange(1,df.iloc[-1]['Epoch']))
+    plt.xticks(np.arange(1,pd.to_numeric(df.iloc[-1]['Epoch'])))
     plt.xlabel('Epochs')
     plt.ylabel('Recall')
     plt.title(file_name)
@@ -438,7 +438,8 @@ if __name__=='__main__':
     df=pd.read_excel(path_to_results, sheet_name='epoch training')
     df_text = pd.read_csv(path_to_results_text, sep=" ", header=None)
     df_text.columns = ['Epoch','Avg Loss Train','Accuracy Train','Recall Train','Specificity Train','Avg Loss Val','Accuracy Val','Recall Val','Specificity Val']
-
+    for column in df_text:
+        df_text[column] = df_text[column].str.extract(r'(\d+[.\d]*)')
     results_plot(df_text,file_name)
     print("End time:",datetime.datetime.now())
     print("Execution time:",datetime.datetime.now() - begin_time)
