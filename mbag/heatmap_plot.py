@@ -84,7 +84,7 @@ def save_figure(path_to_figure:str,original_image, heatmap):
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--image_size", help="size of square image with height = width, ", type=int, default=800)
+    parser.add_argument("--image_size", help="size of square image with height = width, ", type=int, default=400)
     parser.add_argument("--patch_size", help="image patch size of the model, ", type=int, default=9)
     parser.add_argument("--malignent", help="1 if malignant, else 0 ", type=int, default=0)
     args = parser.parse_args()
