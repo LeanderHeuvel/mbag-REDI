@@ -33,7 +33,7 @@ def load_model(model_path, patch_size=33):
     elif patch_size == 33:
         model = mbag.bagnet33_18()
     else:
-        raise ValueError("Invalid path_size")
+        raise ValueError("Invalid patch_size")
     checkpoint = torch.load(model_path)
     checkpoint = remove_module(checkpoint)
     model.load_state_dict(checkpoint)
