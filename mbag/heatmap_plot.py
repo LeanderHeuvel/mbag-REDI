@@ -99,12 +99,15 @@ if __name__=='__main__':
     label = malignant
     figure_name = "heatmap_bagnet_"+str(patch_size)+".png"
     path_to_figure = base_path+"/mbag-REDI/multiview_mammogram/results/"+figure_name
-
+    
+    print("Loading model...")
     model = load_model(path_to_model)
     device = torch.device("cuda")
     model.to(device)
-
+    print("Loading sample")
     sample = load_sample(path_to_sample)
+    print("Generating heatmap...")
     heatmap = generate_heatmap_pytorch(model, sample, label, patch_size)
-    
+    print("Saving figure...")
     save_figure(path_to_figure, sample, heatmap)
+    print("Done!")
