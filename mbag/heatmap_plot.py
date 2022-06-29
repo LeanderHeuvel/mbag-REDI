@@ -91,8 +91,9 @@ if __name__=='__main__':
 
     base_path = os.path.abspath(os.getcwd())
     path_to_sample = base_path+"/1-1.png"
+    
     path_to_model = get_model_path_name(patch_size)
-    label = "placeholder"
+    label = 1
     figure_name = "heatmap_bagnet_"+patch_size+".png"
     path_to_figure = base_path+"/mbag-REDI/multiview_mammogram/results/"+figure_name
 
