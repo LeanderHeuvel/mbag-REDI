@@ -86,7 +86,7 @@ def generate_heatmap_pytorch(model, image, target, patchsize=33):
     
     with torch.no_grad():
         # pad with zeros
-        c, x, y = image.shape
+        _, c, x, y = image.shape
         padded_image = np.zeros((c, x + patchsize - 1, y + patchsize - 1))
         padded_image[:, (patchsize-1)//2:(patchsize-1)//2 + x, (patchsize-1)//2:(patchsize-1)//2 + y] = image[0]
         image = padded_image[None].astype(np.float32)
@@ -99,15 +99,16 @@ def generate_heatmap_pytorch(model, image, target, patchsize=33):
         patches = patches.unfold(1, patchsize, 1).unfold(2, patchsize, 1)
         num_rows = patches.shape[1]
         num_cols = patches.shape[2]
-        patches = patches.contiguous().view((-1, 3, patchsize, patchsize))
-
+        patches = patches.contiguous().view((-1, 1, patchsize, patchsize))
+        print(patches.shape)
         # compute logits for each patch
         logits_list = []
 
-        for batch_patches in torch.split(patches, 1000):
+        for batch_patches in torch.split(patches, 2):
             logits = model(batch_patches)
-            logits = logits[:, target][:, 0]
+            logits = logits[:, target]#[:, 0]
+            # print(logits.shape)
             logits_list.append(logits.data.cpu().numpy().copy())
 
         logits = np.hstack(logits_list)
-        return logits.reshape((224, 224))
+        return logits.reshape((x, y))
