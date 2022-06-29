@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 ## remove module. namespace
 def remove_module(state_dict):
   new_state_dict = OrderedDict()
-  for k, v in checkpoint['state_dict'].items():
+  for k, v in state_dict['state_dict'].items():
     name = k.replace("module.", "")
     new_state_dict[name]=v
   return new_state_dict
