@@ -67,8 +67,9 @@ def load_sample(path_name, size = (400,400)):
     img = np.expand_dims(img,axis=0)
     return img
 
-def save_figure(path_to_figure:str,original_image, heatmap):
+def save_figure(path_to_figure:str,original_image, heatmap,title="bagnet"):
     fig = plt.figure(figsize=(8, 4))
+    fig.suptitle(title)
     original_image = original_image[0].transpose([1,2,0])
     ax = plt.subplot(121)
     ax.set_title('original')
@@ -87,17 +88,20 @@ if __name__=='__main__':
     parser.add_argument("--image_size", help="size of square image with height = width, ", type=int, default=400)
     parser.add_argument("--patch_size", help="image patch size of the model, ", type=int, default=9)
     parser.add_argument("--malignant", help="1 if malignant, else 0 ", type=int, default=0)
+    parser.add_argument("--filename", help="1 if malignant, else 0 ", type=str, default="/Calc-Test_P_00038_LEFT_CC_1-1.png")
     args = parser.parse_args()
     image_size = args.image_size
     patch_size = args.patch_size
     malignant = args.malignant
+    filename = args.filename
 
     base_path = os.path.abspath(os.getcwd())
-    path_to_sample = base_path+"/Calc-Test_P_00038_LEFT_CC_1-1.png"
+    path_to_sample = base_path+"/evaluation/"+filename
+    figure_title = "Heatmap of BagNet_"+str(patch_size)
 
     path_to_model = get_model_path_name(patch_size)
     label = malignant
-    figure_name = "heatmap_bagnet_"+str(patch_size)+".png"
+    figure_name = "heatmap_bagnet_"+filename+"_"+str(patch_size)+".png"
     path_to_figure = base_path+"/mbag-REDI/multiview_mammogram/results/"+figure_name
     
     print("Loading model...")
