@@ -105,8 +105,8 @@ def generate_heatmap_pytorch(model, image, target, patchsize=33):
         logits_list = []
 
         for idx, batch_patches in enumerate(torch.split(patches, 2)):
-            if idx %10==0:
-                print(idx)
+            # if idx %100==0:
+            #     print(idx)
             logits = model(batch_patches)
             logits = logits[:, target]#[:, 0]
             # print(logits.shape)
