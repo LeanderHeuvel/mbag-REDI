@@ -100,7 +100,7 @@ def generate_heatmap_pytorch(model, image, target, patchsize=33):
         num_rows = patches.shape[1]
         num_cols = patches.shape[2]
         patches = patches.contiguous().view((-1, 1, patchsize, patchsize))
-        print(patches.shape)
+        
         # compute logits for each patch
         logits_list = []
 
