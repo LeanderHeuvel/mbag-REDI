@@ -113,5 +113,5 @@ if __name__=='__main__':
     print("Generating heatmap...")
     heatmap = generate_heatmap_pytorch(model, sample, label, patch_size)
     print("Saving figure...")
-    save_figure(path_to_figure, sample, heatmap)
+    save_figure(path_to_figure, sample, heatmap, figure_title)
     print("Done!")
