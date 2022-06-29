@@ -28,9 +28,9 @@ def load_model(model_path, patch_size=33):
     '''
     if patch_size == 9:
         model = mbag.bagnet9_18()
-    if patch_size == 17:
+    elif patch_size == 17:
         model = mbag.bagnet17_18()
-    if patch_size == 33:
+    elif patch_size == 33:
         model = mbag.bagnet33_18()
     else:
         raise ValueError("Invalid path_size")
