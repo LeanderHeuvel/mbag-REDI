@@ -97,7 +97,7 @@ if __name__=='__main__':
 
     path_to_model = get_model_path_name(patch_size)
     label = malignant
-    figure_name = "heatmap_bagnet_"+patch_size+".png"
+    figure_name = "heatmap_bagnet_"+str(patch_size)+".png"
     path_to_figure = base_path+"/mbag-REDI/multiview_mammogram/results/"+figure_name
 
     model = load_model(path_to_model)
