@@ -72,7 +72,7 @@ def save_figure(path_to_figure:str,original_image, heatmap):
     original_image = original_image[0].transpose([1,2,0])
     ax = plt.subplot(121)
     ax.set_title('original')
-    plt.imshow(original_image / 255.)
+    plt.imshow(original_image[:,:,0] / 255.)
     plt.axis('off')
 
     ax = plt.subplot(122)
