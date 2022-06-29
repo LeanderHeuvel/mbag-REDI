@@ -54,7 +54,7 @@ def get_model_path_name(patch_size):
     path_to_model = base_path+"/multiview_mammogram/models/"+file_name+".tar" #name of the folder where to save the models
     
     return path_to_model
-def load_sample(path_name, size = (800,800)):
+def load_sample(path_name, size = (400,400)):
     '''
     returns img array of image in 1 x width x height
 
