@@ -88,7 +88,7 @@ if __name__=='__main__':
     parser.add_argument("--image_size", help="size of square image with height = width, ", type=int, default=400)
     parser.add_argument("--patch_size", help="image patch size of the model, ", type=int, default=9)
     parser.add_argument("--malignant", help="1 if malignant, else 0 ", type=int, default=0)
-    parser.add_argument("--filename", help="1 if malignant, else 0 ", type=str, default="/Calc-Test_P_00038_LEFT_CC_1-1.png")
+    parser.add_argument("--filename", help="1 if malignant, else 0 ", type=str, default="/Mass-Training_P_00009_RIGHT_CC_1-1.png")
     args = parser.parse_args()
     image_size = args.image_size
     patch_size = args.patch_size
