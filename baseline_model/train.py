@@ -93,7 +93,7 @@ def adaptive_learning_rate(optimizer, epoch, init_lr=0.001):
     return optimizer
 
 def optimizer_fn():
-    optimizer = optim.SGD(filter(lambda p: p.requires_grad, model.parameters()), lr=0.001, momentum=0.9, weight_decay=0.0005)
+    optimizer = optim.SGD(filter(lambda p: p.requires_grad, model.parameters()), lr=0.0001, momentum=0.9, weight_decay=0.0005)
     return optimizer
 
 def loss_fn_softmax(weighted_cost_func, class_weights=None):
@@ -300,10 +300,10 @@ if __name__=='__main__':
     #Initialization    
     modality='MG'
     num_classes=2
-    patience_epoch=10
+    patience_epoch=20
     groundtruth_dic={'benign':0,'malignant':1}
     classes=[0,1]
-    max_epochs=50
+    max_epochs=70
     count=0
     count1=0
     acc_num_list_final=[]
