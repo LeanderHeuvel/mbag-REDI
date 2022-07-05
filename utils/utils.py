@@ -150,6 +150,8 @@ def MyCollate(batch):
     i=0
     index=[]
     target=[]
+    img_name=[]
+    abn_type=[]
     for item in batch:
         if i==0:
             data=batch[i][1]
@@ -157,11 +159,13 @@ def MyCollate(batch):
             data=torch.cat((data,batch[i][1]),dim=0)
         index.append(item[0])
         target.append(item[2])
+        img_name.append(item[3])
+        abn_type.append(item[4])
         i+=1
     index = torch.LongTensor(index)
     target = torch.LongTensor(target)
     test = torch.tensor([1])
-    return [index, data, target,test]#, views_names
+    return [index, data, target,img_name,abn_type]#, views_names
 
 def collect_images(data): #changed this
     #collect images for the model
