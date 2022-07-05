@@ -143,7 +143,8 @@ class BreastCancerDataset_generator(Dataset): #changed this
         # img=img[0,:,:].unsqueeze(0)
         if self.get_image_name:
             return idx, img, torch.tensor(groundtruth_dic[data['Groundtruth']]), data['ImageName'], data['AbnormalityType']
-        return idx, img, torch.tensor(groundtruth_dic[data['Groundtruth']])
+        else:
+            return idx, img, torch.tensor(groundtruth_dic[data['Groundtruth']])
 
 def MyCollate(batch):
     i=0

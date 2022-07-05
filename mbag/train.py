@@ -479,6 +479,7 @@ if __name__=='__main__':
     
     dataset_gen_test = utils.BreastCancerDataset_generator(df_test,modality,flipimage,preprocess_val)
     dataloader_test = DataLoader(dataset_gen_test, batch_size=batch_size, shuffle=False, num_workers=num_workers, collate_fn=utils.MyCollate)
+    
     dataset_gen_test_evaluate = utils.BreastCancerDataset_generator(df_test,modality,flipimage,preprocess_val, get_image_name=True)
     dataloader_evaluate = DataLoader(dataset_gen_test_evaluate, batch_size=batch_size, shuffle=False, num_workers=num_workers, collate_fn=utils.MyCollate)
 
