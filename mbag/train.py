@@ -320,7 +320,7 @@ def analyze_test_samples(model, data_iterator_test, batches_test):
         # correct, total_images, conf_mat_test, _=conf_mat_create(test_pred,test_labels,correct,total_images,conf_mat_test)
         batch_test_no+=1
         s=s+test_batch.shape[0]
-        results = [img_name, abnormality_type, test_labels.cpu().numpy()[0], test_pred.cpu().numpy()[0]]
+        results = [img_name[0], abnormality_type[0], test_labels.cpu().numpy()[0], test_pred.cpu().numpy()[0]]
         sheet5.append(results)
 
         # print ('Test: Step [{}/{}], Loss: {:.4f}'.format(batch_test_no, batches_test, loss1))
