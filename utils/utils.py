@@ -142,7 +142,7 @@ class BreastCancerDataset_generator(Dataset): #changed this
         img=img.unsqueeze(0).unsqueeze(1)
         # img=img[0,:,:].unsqueeze(0)
         if self.get_image_name:
-            return  idx, img, torch.tensor(groundtruth_dic[data['Groundtruth']]), np.array(data['ImageName']), np.array(data['AbnormalityType'])
+            return  idx, img, torch.tensor(groundtruth_dic[data['Groundtruth']]),data['ImageName'], data['AbnormalityType']
         else:
             return idx, img, torch.tensor(groundtruth_dic[data['Groundtruth']])
 
