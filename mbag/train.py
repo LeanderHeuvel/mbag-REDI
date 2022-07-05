@@ -325,11 +325,6 @@ def analyze_test_samples(model, data_iterator_test, batches_test):
 
         # print ('Test: Step [{}/{}], Loss: {:.4f}'.format(batch_test_no, batches_test, loss1))
 
-    print("total_images:",total_images)
-    print("s:",s)
-    print('\nTest set: total val loss: {:.4f}, Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%) \n'.format(
-        test_loss, test_loss/total_images, correct, total_images, 100. * correct / total_images))
-
     # sheet3.append([0,1])
     # for row in conf_mat_test.tolist():
     #     sheet3.append(row)
