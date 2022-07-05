@@ -294,7 +294,7 @@ def analyze_test_samples(model, data_iterator_test, batches_test):
     lossfn1 = loss_fn_softmax(False)
     sheet5.append(['ImgName','AbnormalityType','Groundtruth','Prediction'])
     for test_idx, test_batch, test_labels  in data_iterator_test:
-        test_labels, img_name, abnormality_type = test_labels
+        # test_labels, img_name, abnormality_type = test_labels
         test_batch, test_labels=test_batch.to(device), test_labels.to(device)
         test_labels=test_labels.view(-1)
         output_test = model(test_batch)
