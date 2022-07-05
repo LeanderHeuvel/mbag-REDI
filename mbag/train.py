@@ -240,7 +240,7 @@ def test(model, data_iterator_test, batches_test):
     s=0
     batch_test_no=0
     conf_mat_test=np.zeros((2,2))
-    lossfn1=loss_fn_softmax(False)
+    lossfn1 = loss_fn_softmax(False)
     for test_idx, test_batch, test_labels in data_iterator_test:
         test_batch, test_labels=test_batch.to(device), test_labels.to(device)
         test_labels=test_labels.view(-1)
@@ -282,6 +282,64 @@ def test(model, data_iterator_test, batches_test):
     print(per_model_metrics)
     sheet3.append(['Precision','Recall','Specificity','F1','Acc','Bal_Acc','Cohens Kappa','AUC'])
     sheet3.append(per_model_metrics)
+
+def analyze_test_samples(model, data_iterator_test, batches_test):
+    """Evaluating test samples"""
+    model.eval()
+    total_images=0
+    test_loss = 0
+    correct = 0
+    s=0
+    batch_test_no=0
+    lossfn1 = loss_fn_softmax(False)
+    sheet5.append(['ImgName','AbnormalityType','Groundtruth','Prediction'])
+    for test_idx, test_batch, test_labels, img_name, abnormality_type in data_iterator_test:
+        test_batch, test_labels=test_batch.to(device), test_labels.to(device)
+        test_labels=test_labels.view(-1)
+        output_test = model(test_batch)
+        if activation=='softmax':
+            test_pred = output_test.argmax(dim=1, keepdim=True)
+        
+        if batch_test_no==0:
+            test_pred_all=test_pred
+            test_labels_all=test_labels
+            print(output_test.data.shape)
+            if activation=='softmax':
+                output_all_ten=F.softmax(output_test.data,dim=1)
+                output_all_ten=output_all_ten[:,1]
+        else:
+            test_pred_all=torch.cat((test_pred_all,test_pred),dim=0)
+            test_labels_all=torch.cat((test_labels_all,test_labels),dim=0)
+            if activation=='softmax':
+                output_all_ten=torch.cat((output_all_ten,F.softmax(output_test.data,dim=1)[:,1]),dim=0)
+        
+        loss1=lossfn1(output_test, test_labels).item()
+        test_loss += test_labels.size()[0]*loss1 # sum up batch loss
+        
+        # correct, total_images, conf_mat_test, _=conf_mat_create(test_pred,test_labels,correct,total_images,conf_mat_test)
+        batch_test_no+=1
+        s=s+test_batch.shape[0]
+        results = [img_name, abnormality_type, test_labels, test_pred]
+        sheet5.append(results)
+
+        # print ('Test: Step [{}/{}], Loss: {:.4f}'.format(batch_test_no, batches_test, loss1))
+
+    print("total_images:",total_images)
+    print("s:",s)
+    print('\nTest set: total val loss: {:.4f}, Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%) \n'.format(
+        test_loss, test_loss/total_images, correct, total_images, 100. * correct / total_images))
+
+    # sheet3.append([0,1])
+    # for row in conf_mat_test.tolist():
+    #     sheet3.append(row)
+    
+    # per_model_metrics = utils.performance_metrics(conf_mat_test,test_labels_all.cpu().numpy(),test_pred_all.cpu().numpy(), output_all_ten.cpu().numpy())
+    
+    # print(per_model_metrics)
+    # sheet5.append(['Precision','Recall','Specificity','F1','Acc','Bal_Acc','Cohens Kappa','AUC'])
+    # sheet5.append(per_model_metrics)
+
+    pass
     
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
@@ -384,6 +442,7 @@ if __name__=='__main__':
         sheet2 = wb['confusion matrix train_val']
         sheet3 = wb['confusion matrix test']
         sheet4 = wb['metrics view wise']
+        sheet5 = wb['eval per sample']
     else:
         wb=Workbook()
         sheet1=wb.active
@@ -393,6 +452,7 @@ if __name__=='__main__':
         sheet2 = wb.create_sheet('confusion matrix train_val')
         sheet3 = wb.create_sheet('confusion matrix test') 
         sheet4 = wb.create_sheet('metrics view wise')
+        sheet5 = wb.create_sheet('eval per sample')
     if patch_size==9:
         model = mbag.bagnet9_18(num_classes=2) #change this line to resnet18,resnet50 or bagnet() whatever you want to use
     if patch_size==17:
@@ -419,7 +479,8 @@ if __name__=='__main__':
     
     dataset_gen_test = utils.BreastCancerDataset_generator(df_test,modality,flipimage,preprocess_val)
     dataloader_test = DataLoader(dataset_gen_test, batch_size=batch_size, shuffle=False, num_workers=num_workers, collate_fn=utils.MyCollate)
-    
+    dataloader_evaluate = DataLoader(dataset_gen_test, batch_size=batch_size, shuffle=False, get_image_name=True, num_workers=num_workers, collate_fn=utils.MyCollate)
+
     batches_train=int(math.ceil(train_instances/batch_size))
     batches_val=int(math.ceil(val_instances/batch_size))
     batches_test=int(math.ceil(test_instances/batch_size))
@@ -431,7 +492,11 @@ if __name__=='__main__':
     optimizer = optimizer_fn()
     path_to_trained_model=path_to_model
     model,  optimizer, epoch_idx = load_model(model, optimizer, path_to_trained_model)
-    test(model, dataloader_test, batches_test)
+    if training_required == 2:
+        ''' evaluation per sample '''
+        analyze_test_samples(model,dataloader_evaluate, batches_test)
+    else:
+        test(model, dataloader_test, batches_test)
     wb.save(path_to_results)
             
     #plot the training and validation loss and accuracy

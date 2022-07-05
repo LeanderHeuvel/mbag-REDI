@@ -112,7 +112,7 @@ class MyPaddingLongerSide:
 class BreastCancerDataset_generator(Dataset): #changed this
     """Face Landmarks dataset."""
 
-    def __init__(self, df, modality, flipimage, transform=None):
+    def __init__(self, df, modality, flipimage, transform=None, get_image_name = False):
         """
         Args:
             csv_file (string): Path to the csv file with annotations.
@@ -125,6 +125,7 @@ class BreastCancerDataset_generator(Dataset): #changed this
         self.transform = transform
         self.flipimage = flipimage
         self.hflip_img = MyHorizontalFlip()
+        self.get_image_name = get_image_name
 
     def __len__(self):
         return self.df.shape[0]
@@ -140,6 +141,8 @@ class BreastCancerDataset_generator(Dataset): #changed this
         img=img[0,:,:]
         img=img.unsqueeze(0).unsqueeze(1)
         # img=img[0,:,:].unsqueeze(0)
+        if self.get_image_name:
+            return idx, img, torch.tensor(groundtruth_dic[data['Groundtruth']]), data['ImageName'], data['AbnormalityType']
         return idx, img, torch.tensor(groundtruth_dic[data['Groundtruth']])
 
 def MyCollate(batch):
