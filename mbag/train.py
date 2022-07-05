@@ -182,10 +182,10 @@ def train(model,data_iterator_train,data_iterator_test,batches_train,batches_val
     for row in early_stopping.conf_mat_test_best.tolist():
         sheet2.append(row)
     np_out=open('train_loss_batches.npy','wb')
-    np.save(np_out,loss_np_train)
+    # np.save(np_out,loss_np_train)
     np_out.close()
     np_out2=open('val_loss_batches.npy','wb')
-    np.save(np_out2,loss_np_val)
+    # np.save(np_out2,loss_np_val)
     np_out2.close()
     print('Finished Training')
     
