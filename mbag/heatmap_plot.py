@@ -109,10 +109,10 @@ def analyze_heatmaps(path_to_csv,path_to_data, path_to_figure, image_size=800):
             path_to_sample = path_to_data+img_name+'.png'
             figure_name = "heatmap_"+img_name+"_bagnet"+str(patch_size)+".png"
             figure_title = str(abnormality)+" "+str(groundtruth_dict[groundtruth]) +" BagNet"+str(patch_size)+" predicted: "+groundtruth_dict[prediction]
-            #load model
-            model = load_model(path_to_model, patch_size)
-            device = torch.device("cuda")
-            model.to(device)
+            # #load model
+            # model = load_model(path_to_model, patch_size)
+            # device = torch.device("cuda")
+            # model.to(device)
             path_to_figure_name = path_to_figure + figure_name
             sample = load_sample(path_to_sample, size=(image_size,image_size))
             heatmap = generate_heatmap_pytorch(model, sample, groundtruth, patch_size)
