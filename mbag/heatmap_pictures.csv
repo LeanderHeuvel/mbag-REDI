@@ -1,0 +1,7 @@
+﻿ImgName;AbnormalityType;Groundtruth;bagnet33;bagnet17;bagnet9;resnet
+Calc-Training_P_00047_LEFT_MLO_1.1;calcification;1;0;0;0;0
+Mass-Test_P_00066_LEFT_CC_1.1;mass;1;0;0;0;0
+Calc-Test_P_00150_RIGHT_MLO_1.1;calcification;1;1;1;1;0
+Mass-Training_P_00354_LEFT_CC_1.1;mass;1;0;0;1;0
+Calc-Training_P_00557_LEFT_CC_1.1;calcification;0;1;1;1;0
+Mass-Training_P_01439_LEFT_MLO_1.1;mass;0;0;0;1;1

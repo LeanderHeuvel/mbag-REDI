@@ -7,6 +7,7 @@ import os
 from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 ## remove module. namespace
@@ -82,36 +83,64 @@ def save_figure(path_to_figure:str,original_image, heatmap,title="bagnet"):
     plt.axis('off')
     fig.savefig(path_to_figure)
 
+def load_csv_data(path_to_csv):
+    df = pd.read_csv(path_to_csv, sep=';')
+    outcomes = []
+    abnormalities = list(df['AbnormalityType'])
+    img_names = list(df['ImgName'])
+    for model in ('Groundtruth','bagnet9','bagnet17','bagnet33'):
+        outcomes.append(list(df[model]))
+    return img_names, abnormalities, outcomes
+
+def analyze_heatmaps(model, path_to_csv,path_to_data,image_size=800):
+    groundtruth_dict = {0:"benign",1:"malignant"}
+    patch_dict = {0:9,1:17,2:33}
+
+    img_names, abnormalities, outcomes = load_csv_data(path_to_csv)
+    for model_idx, groundtruths, model_predictions in enumerate(zip(outcomes[:,0],outcomes[:,1:],)):
+        patch_size = patch_dict[model_idx]
+        path_to_model = get_model_path_name(patch_size)
+        model = load_model(path_to_model, patch_size)
+        device = torch.device("cuda")
+        model.to(device)
+        for img_name, groundtruth, prediction, abnormality in zip(img_names,groundtruths, model_predictions, abnormalities):
+            path_to_sample = path_to_data+img_name
+            path_to_figure = path_to_data + figure_name
+            figure_name = "heatmap_"+img_name+"_bagnet"+str(patch_size)+".png"
+            figure_title = str(abnormality)+" "+str(groundtruth_dict[groundtruth]) +" BagNet"+str(patch_size)+" predicted: "+groundtruth_dict[prediction]
+            #load model
+            model = load_model(path_to_model, patch_size)
+            device = torch.device("cuda")
+            model.to(device)
+            sample = load_sample(path_to_sample, size=(image_size,image_size))
+            heatmap = generate_heatmap_pytorch(model, sample, groundtruth, patch_size)
+            save_figure(path_to_figure, sample, heatmap, figure_title)
+        # free up memory
+        del model
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--image_size", help="size of square image with height = width, ", type=int, default=400)
     parser.add_argument("--patch_size", help="image patch size of the model, ", type=int, default=9)
     parser.add_argument("--malignant", help="1 if malignant, else 0 ", type=int, default=0)
-    parser.add_argument("--filename", help="1 if malignant, else 0 ", type=str, default="/Mass-Training_P_00009_RIGHT_CC_1-1.png")
+    parser.add_argument("--filename", help="1 if malignant, else 0 ", type=str, default="/mbag-REDI/mbag/heatmap_pictures.csv")
     args = parser.parse_args()
     image_size = args.image_size
-    patch_size = args.patch_size
-    malignant = args.malignant
+    # patch_size = args.patch_size
+    # malignant = args.malignant
     filename = args.filename
-
     base_path = os.path.abspath(os.getcwd())
-    path_to_sample = base_path+"/evaluation/"+filename
-    figure_title = "Heatmap of BagNet_"+str(patch_size)
+    path_to_csv = base_path + filename
+    path_to_data = "/deepstore/datasets/dmb/Biomedical/cbis-ddsm/processed/"
+    analyze_heatmaps(path_to_csv,path_to_data)
+    # base_path = os.path.abspath(os.getcwd())
+   
+    # figure_title = "Heatmap of BagNet_"+str(patch_size)
 
-    path_to_model = get_model_path_name(patch_size)
-    label = malignant
-    figure_name = "heatmap_bagnet_"+filename+"_"+str(patch_size)+".png"
-    path_to_figure = base_path+"/mbag-REDI/multiview_mammogram/results/"+figure_name
+    # path_to_model = get_model_path_name(patch_size)
+ 
     
-    print("Loading model...")
-    model = load_model(path_to_model, patch_size)
-    device = torch.device("cuda")
-    model.to(device)
-    print("Loading sample")
-    sample = load_sample(path_to_sample, size=(image_size,image_size))
-    print("Generating heatmap...")
-    heatmap = generate_heatmap_pytorch(model, sample, label, patch_size)
-    print("Saving figure...")
-    save_figure(path_to_figure, sample, heatmap, figure_title)
-    print("Done!")
+    # path_to_figure = base_path+"/mbag-REDI/multiview_mammogram/results/"+figure_name
+    
+    
+ 
