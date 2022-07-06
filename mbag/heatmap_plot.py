@@ -98,7 +98,7 @@ def analyze_heatmaps(path_to_csv,path_to_data, path_to_figure, image_size=800):
 
     img_names, abnormalities, outcomes = load_csv_data(path_to_csv)
     model_idx=0
-    for groundtruths, model_predictions in zip(outcomes[:,0],outcomes[:,1:]):
+    for groundtruths, model_predictions in zip(outcomes[:][0],outcomes[:][1:]):
         patch_size = patch_dict[model_idx]
         model_idx += 1
         path_to_model = get_model_path_name(patch_size)
