@@ -92,7 +92,7 @@ def load_csv_data(path_to_csv):
         outcomes.append(list(df[model]))
     return img_names, abnormalities, outcomes
 
-def analyze_heatmaps(model, path_to_csv,path_to_data, path_to_figure, image_size=800):
+def analyze_heatmaps(path_to_csv,path_to_data, path_to_figure, image_size=800):
     groundtruth_dict = {0:"benign",1:"malignant"}
     patch_dict = {0:9,1:17,2:33}
 
@@ -120,9 +120,6 @@ def analyze_heatmaps(model, path_to_csv,path_to_data, path_to_figure, image_size
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--image_size", help="size of square image with height = width, ", type=int, default=400)
-    parser.add_argument("--patch_size", help="image patch size of the model, ", type=int, default=9)
-    parser.add_argument("--malignant", help="1 if malignant, else 0 ", type=int, default=0)
     parser.add_argument("--filename", help="1 if malignant, else 0 ", type=str, default="/mbag-REDI/mbag/heatmap_pictures.csv")
     args = parser.parse_args()
     image_size = args.image_size
