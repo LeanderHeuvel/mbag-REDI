@@ -122,9 +122,6 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--filename", help="1 if malignant, else 0 ", type=str, default="/mbag-REDI/mbag/heatmap_pictures.csv")
     args = parser.parse_args()
-    image_size = args.image_size
-    # patch_size = args.patch_size
-    # malignant = args.malignant
     filename = args.filename
     base_path = os.path.abspath(os.getcwd())
     path_to_csv = base_path + filename
