@@ -98,14 +98,14 @@ def analyze_heatmaps(path_to_csv,path_to_data, path_to_figure, image_size=800):
 
     img_names, abnormalities, outcomes = load_csv_data(path_to_csv)
     model_idx=0
-    for groundtruths, model_predictions in zip(outcomes[:][0],outcomes[:][1:]):
+    for model_predictions in outcomes[:][1:]:
         patch_size = patch_dict[model_idx]
         model_idx += 1
         path_to_model = get_model_path_name(patch_size)
         model = load_model(path_to_model, patch_size)
         device = torch.device("cuda")
         model.to(device)
-        for img_name, groundtruth, prediction, abnormality in zip(img_names,groundtruths, model_predictions, abnormalities):
+        for img_name, groundtruth, prediction, abnormality in zip(img_names, outcomes[:][0], model_predictions, abnormalities):
             path_to_sample = path_to_data+img_name
             figure_name = "heatmap_"+img_name+"_bagnet"+str(patch_size)+".png"
             figure_title = str(abnormality)+" "+str(groundtruth_dict[groundtruth]) +" BagNet"+str(patch_size)+" predicted: "+groundtruth_dict[prediction]
