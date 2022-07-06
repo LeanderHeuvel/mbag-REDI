@@ -113,10 +113,10 @@ def analyze_heatmaps(path_to_csv,path_to_data, path_to_figure, image_size=800):
             model = load_model(path_to_model, patch_size)
             device = torch.device("cuda")
             model.to(device)
-            path_to_figure = path_to_figure + figure_name
+            path_to_figure_name = path_to_figure + figure_name
             sample = load_sample(path_to_sample, size=(image_size,image_size))
             heatmap = generate_heatmap_pytorch(model, sample, groundtruth, patch_size)
-            save_figure(path_to_figure, sample, heatmap, figure_title)
+            save_figure(path_to_figure_name, sample, heatmap, figure_title)
         # free up memory
         del model
 
