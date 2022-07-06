@@ -127,7 +127,7 @@ if __name__=='__main__':
     filename = args.filename
     base_path = os.path.abspath(os.getcwd())
     path_to_csv = base_path + filename
-    path_to_data = "deepstore/datasets/dmb/Biomedical/cbis-ddsm/processed/"
+    path_to_data = "/deepstore/datasets/dmb/Biomedical/cbis-ddsm/processed/"
     path_to_figure = base_path +"/heatmaps/"
     analyze_heatmaps(path_to_csv,path_to_data,path_to_figure)
     # base_path = os.path.abspath(os.getcwd())
