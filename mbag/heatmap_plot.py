@@ -92,7 +92,7 @@ def load_csv_data(path_to_csv):
         outcomes.append(list(df[model]))
     return img_names, abnormalities, outcomes
 
-def analyze_heatmaps(model, path_to_csv,path_to_data,image_size=800):
+def analyze_heatmaps(model, path_to_csv,path_to_data, path_to_figure, image_size=800):
     groundtruth_dict = {0:"benign",1:"malignant"}
     patch_dict = {0:9,1:17,2:33}
 
@@ -105,13 +105,13 @@ def analyze_heatmaps(model, path_to_csv,path_to_data,image_size=800):
         model.to(device)
         for img_name, groundtruth, prediction, abnormality in zip(img_names,groundtruths, model_predictions, abnormalities):
             path_to_sample = path_to_data+img_name
-            path_to_figure = path_to_data + figure_name
             figure_name = "heatmap_"+img_name+"_bagnet"+str(patch_size)+".png"
             figure_title = str(abnormality)+" "+str(groundtruth_dict[groundtruth]) +" BagNet"+str(patch_size)+" predicted: "+groundtruth_dict[prediction]
             #load model
             model = load_model(path_to_model, patch_size)
             device = torch.device("cuda")
             model.to(device)
+            path_to_figure = path_to_figure + figure_name
             sample = load_sample(path_to_sample, size=(image_size,image_size))
             heatmap = generate_heatmap_pytorch(model, sample, groundtruth, patch_size)
             save_figure(path_to_figure, sample, heatmap, figure_title)
@@ -132,7 +132,8 @@ if __name__=='__main__':
     base_path = os.path.abspath(os.getcwd())
     path_to_csv = base_path + filename
     path_to_data = "/deepstore/datasets/dmb/Biomedical/cbis-ddsm/processed/"
-    analyze_heatmaps(path_to_csv,path_to_data)
+    path_to_figure = base_path +"/heatmaps/"
+    analyze_heatmaps(path_to_csv,path_to_data,path_to_figure)
     # base_path = os.path.abspath(os.getcwd())
    
     # figure_title = "Heatmap of BagNet_"+str(patch_size)
